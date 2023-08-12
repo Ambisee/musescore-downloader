@@ -1,0 +1,11 @@
+# Directories
+.vscode
+chromedriver
+virtualenv
+output
+**/__pycache__
+
+# Files
+**/*.txt
+**/config.ini
+musescore_downloader.py
