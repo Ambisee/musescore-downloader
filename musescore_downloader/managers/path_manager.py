@@ -1,6 +1,10 @@
 import os
 
-from pathvalidate import validate_filepath, validate_filename
+from pathvalidate import (
+    validate_filepath, 
+    validate_filename,
+    sanitize_filepath
+)
 
 class PathManager:
     """Manages the file and directory paths where the files will be saved.
@@ -179,11 +183,13 @@ class PathManager:
         str
             A formatted file path.
         """
-        return os.path.join(self.page_image_dir_format, self.page_image_filename_format) % {
+        path = os.path.join(self.page_image_dir_format, self.page_image_filename_format) % {
             'title': title,
             'page_num': page_num,
             'extension': extension
         }
+
+        return sanitize_filepath(path)
 
     def get_output_filepath(self, title):
         """Gets a formatted path to the resulting PDF file.
@@ -198,9 +204,11 @@ class PathManager:
         str
             A formatted file path.
         """
-        return os.path.join(self.output_dir_format, self.output_filename_format) % {
+        path = os.path.join(self.output_dir_format, self.output_filename_format) % {
             'title': title
         }
+
+        return sanitize_filepath(path)
 
     def get_page_image_dir(self, title):
         """Gets a formatted path to the directory containing the page files.
@@ -215,9 +223,11 @@ class PathManager:
         str
             The formatted directory path.
         """
-        return self.page_image_dir_format % {
+        path = self.page_image_dir_format % {
             'title': title
         }
+
+        return sanitize_filepath(path)
     
     def get_output_dir(self, title):
         """Gets a formatted path to a directory where the resulting PDF file will be placed in.
@@ -232,6 +242,8 @@ class PathManager:
         str
             The formatted directory path.
         """
-        return self.output_dir_format % {
+        path = self.output_dir_format % {
             'title': title
         }
+
+        return sanitize_filepath(path)
