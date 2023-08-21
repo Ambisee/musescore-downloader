@@ -42,6 +42,9 @@ class PDFGenerator:
         self.page_size = page_size
         self.path_manager = path_manager
     
+    def set_page_size(self, page_size: tuple[float, float]):
+        self.page_size = page_size
+
     def scale_to_fit_page(self, drawing: Drawing):
         """Resizes an SVG file into the dimensions of the page.
         

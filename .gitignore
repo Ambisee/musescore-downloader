@@ -3,6 +3,7 @@
 chromedriver
 virtualenv
 output
+.pytest_cache
 **/__pycache__
 
 # Files

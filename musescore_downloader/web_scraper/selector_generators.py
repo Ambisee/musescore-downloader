@@ -1,7 +1,7 @@
 class SelectorGenerators:
     """Collection of functions that generates CSS selectors
     """
-    
+
     @staticmethod
     def generate_id_selector(id: str):
         """Generates a CSS selector based on an HTML element's `id` attribute

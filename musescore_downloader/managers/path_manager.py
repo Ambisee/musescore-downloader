@@ -6,6 +6,13 @@ from pathvalidate import (
     sanitize_filepath
 )
 
+from ..common.defaults import (
+    PAGE_IMAGE_DIR_FORMAT,
+    PAGE_IMAGE_FILENAME_FORMAT,
+    OUTPUT_DIR_FORMAT,
+    OUTPUT_FILENAME_FORMAT
+)
+
 class PathManager:
     """Manages the file and directory paths where the files will be saved.
     
@@ -20,15 +27,6 @@ class PathManager:
     output_filename_format : str, default="%(title)s.pdf"
         Filename format of the resulting PDF file. The format must include the `%(title)s` variable placeholder and must end with the `.pdf` extension.
     """
-
-    # Defaults
-    page_image_dir_format = os.path.join(".", "output", "%(title)s", "pages")
-    page_image_filename_format = "page_%(page_num)s%(extension)s"
-    output_dir_format = os.path.join(".", "output", "%(title)s")
-    output_filename_format = "%(title)s.pdf"
-
-    test_dir_format_obj = {'title': 'foo'}
-    test_filename_format_obj = {'title': 'foo', 'page_num': 0, 'extension': '.svg'}
 
     def __init__(
         self,
@@ -64,7 +62,7 @@ class PathManager:
         """
 
         if output_filename_format is None:
-            self.output_filename_format = PathManager.output_filename_format
+            self.output_filename_format = OUTPUT_FILENAME_FORMAT
             return
         
         if "%(title)s" not in output_filename_format:
@@ -94,7 +92,7 @@ class PathManager:
         - ErrorReason.INVALID_LENGTH : The filepath exceeds the maximum length for a filepath.
         """
         if output_dir_format is None:
-            self.output_dir_format = PathManager.output_dir_format
+            self.output_dir_format = OUTPUT_DIR_FORMAT
             return
         
         if "%(title)s" not in output_dir_format:
@@ -124,7 +122,7 @@ class PathManager:
         - ErrorReason.INVALID_LENGTH : The filepath exceeds the maximum length for a filepath.
         """
         if page_image_dir_format is None:
-            self.page_image_dir_format = PathManager.page_image_dir_format
+            self.page_image_dir_format = PAGE_IMAGE_DIR_FORMAT
             return
         
         if "%(title)s" not in page_image_dir_format:
@@ -154,7 +152,7 @@ class PathManager:
         - ErrorReason.INVALID_LENGTH : The filepath exceeds the maximum length for a filepath.
         """
         if page_image_filename_format is None:
-            self.page_image_filename_format = PathManager.page_image_filename_format
+            self.page_image_filename_format = PAGE_IMAGE_FILENAME_FORMAT
             return
         
         if not all(placeholder in page_image_filename_format for placeholder in ["%(page_num)s", "%(extension)s"]):

@@ -32,6 +32,8 @@ class ScoreScraper:
         The CSS selector that targets the element containing the total number of pages in the music sheet.
     title_container_selector : str
         The CSS selector that targets the element containing the title of the music sheet.
+    url : str
+        The URL to the music sheet's webpage.
     timeout : float
         The time (in seconds) for the driver to wait for a certain condition to be fulfilled before timeout.
     """
@@ -42,7 +44,8 @@ class ScoreScraper:
         page_container_selector: str,
         total_pages_container_selector: str,
         title_container_selector: str,
-        timeout: int = 10,
+        url: str | None = None,
+        timeout: float = 10,
     ):
         self.scroll_element_selector = scroll_element_selector
         self.page_container_selector = page_container_selector
@@ -50,8 +53,8 @@ class ScoreScraper:
         self.title_container_selector = title_container_selector
 
         self.driver: webdriver.Chrome | None = None
-        self.url: str | None = None
-        self.timeout: float = 10
+        self.url: str | None = url
+        self.timeout: float = timeout
 
     def set_url(self, url: str):
         self.url = url
@@ -137,7 +140,7 @@ class ScoreScraper:
         try:
             self.driver.get(self.url)
             initial_img_element:WebElement = WebDriverWait(self.driver, self.timeout).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, ".EEnGW.F16e6 > img"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.page_container_selector} > img"))
             )
         except TimeoutException:
             self.driver.close()

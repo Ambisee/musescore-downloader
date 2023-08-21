@@ -1,3 +1,6 @@
-import os
+from musescore_downloader.core.initializers import handle_args
+from argparse import Namespace
 
-print(os.path.dirname(__file__))
+
+args: Namespace = handle_args()
+print(args.filename)

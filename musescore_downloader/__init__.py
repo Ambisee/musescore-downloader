@@ -1,3 +1,4 @@
-from . import log_handler
-from .interface import download_score
-from .config_handler import initialize_config_handler
+from .core.interfaces.cli import cli_main
+
+if __name__ == "__main__":
+    cli_main()
