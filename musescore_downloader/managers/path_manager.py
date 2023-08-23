@@ -28,6 +28,15 @@ class PathManager:
         Filename format of the resulting PDF file. The format must include the `%(title)s` variable placeholder and must end with the `.pdf` extension.
     """
 
+    test_dir_format_obj = {
+        "title": "hello"
+    }
+
+    test_filename_format_obj = {
+        "extension": ".pdf",
+        "page_num": 0
+    }
+
     def __init__(
         self,
         page_image_dir_format=None,

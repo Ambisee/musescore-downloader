@@ -3,4 +3,4 @@ from argparse import Namespace
 
 
 args: Namespace = handle_args()
-print(args.filename)
+print(args.__dict__)

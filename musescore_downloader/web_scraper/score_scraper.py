@@ -15,6 +15,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from get_chrome_driver import GetChromeDriver
 
 from ..common.types.score_scraper_result import ScoreScraperResult
+from ..managers.selectors_manager import SelectorsManager
 
 class UninitializedWebDriverError(Exception):
     """No webdriver initialized."""
@@ -24,14 +25,8 @@ class ScoreScraper:
 
     Attributes
     ----------
-    scroll_element_selector : str
-        The CSS selector that targets the scrollable container that contains the sheet's pages.
-    page_container_selector : str
-        The CSS selector that targets the container element that contains the pages.
-    total_pages_container_selector : str
-        The CSS selector that targets the element containing the total number of pages in the music sheet.
-    title_container_selector : str
-        The CSS selector that targets the element containing the title of the music sheet.
+    selectors_manager : SelectorsManager
+        The object that contains the CSS selectors of the HTML elements that contains information.
     url : str
         The URL to the music sheet's webpage.
     timeout : float
@@ -40,18 +35,11 @@ class ScoreScraper:
 
     def __init__(
         self,
-        scroll_element_selector: str,
-        page_container_selector: str,
-        total_pages_container_selector: str,
-        title_container_selector: str,
+        selectors_manager: SelectorsManager,
         url: str | None = None,
         timeout: float = 10,
     ):
-        self.scroll_element_selector = scroll_element_selector
-        self.page_container_selector = page_container_selector
-        self.total_pages_container_selector = total_pages_container_selector
-        self.title_container_selector = title_container_selector
-
+        self.selectors_manager = selectors_manager
         self.driver: webdriver.Chrome | None = None
         self.url: str | None = url
         self.timeout: float = timeout
@@ -140,7 +128,7 @@ class ScoreScraper:
         try:
             self.driver.get(self.url)
             initial_img_element:WebElement = WebDriverWait(self.driver, self.timeout).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.page_container_selector} > img"))
+                EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.selectors_manager.page_container_selector} > img"))
             )
         except TimeoutException:
             self.driver.close()
@@ -148,16 +136,16 @@ class ScoreScraper:
 
             raise NoSuchElementException("The initial page of the music sheet is not found. Please ensure that you have set the correct Musescore URL.")
 
-        page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.page_container_selector)
-        title = self.driver.find_element(By.CSS_SELECTOR, self.title_container_selector).text
-        total_pages = self.driver.find_element(By.CSS_SELECTOR, self.total_pages_container_selector).text
+        page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
+        title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
+        total_pages = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
         total_pages = int(total_pages)
     
         logging.info(f"Retrieved the title of the music sheet: {title}")
         logging.info(f"Retrieved the number of total pages in the music sheet: {total_pages} pages in total")
 
-        self.driver.execute_script(f"scrollElement = document.querySelector('{self.scroll_element_selector}')")
-        self.driver.execute_script(f"pageContainers = document.querySelectorAll('{self.page_container_selector}')")
+        self.driver.execute_script(f"scrollElement = document.querySelector('{self.selectors_manager.scroll_element_selector}')")
+        self.driver.execute_script(f"pageContainers = document.querySelectorAll('{self.selectors_manager.page_container_selector}')")
 
         image_urls = [initial_img_element.get_attribute("src")]
 

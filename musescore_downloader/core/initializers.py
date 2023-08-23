@@ -1,6 +1,6 @@
+import os
 from argparse import (
     ArgumentParser,
-    Namespace
 )
 
 from ..managers.path_manager import PathManager
@@ -17,36 +17,31 @@ def handle_args():
         help="Musescore URL from where to download the music sheet from."
     )
     parser.add_argument(
-        "--filename", 
-        help="sets the filename format of the resulting PDF file. Must include the %%(title)s variable placeholder."
+        "--dirpath", 
+        help="sets the directory path to store the output files. Must include the %%(title)s variable placeholder.",
+        type=str
     )
     parser.add_argument(
-        "--dirpath", 
-        help="sets the filename format of the resulting PDF file. Must include the %%(title)s variable placeholder."
+        "--page-size",
+        help="the page size of the output PDF. Allowed values include the following literals: 'A4', 'LETTER'.",
     )
     parser.add_argument(
         "--save-pagefiles",
         help="sets whether to keep the pagefiles after the program ends.",
-        type=bool
-    )
-    parser.add_argument(
-        "--page_size",
-        help="the page size of the output PDF. Allowed values include the following literals: 'A4', 'LETTER'."
+        action="store_true"
     )
 
     args = parser.parse_args()
     return args
 
-def initialize_path_manager(arguments: Namespace, logger):
+def initialize_path_manager(path_manager_args):
     path_manager = PathManager()
-
+ 
     try:
-        if arguments.filename is not None:
-            path_manager.set_output_filename_format(arguments.filename)
-        if arguments.dirpath is not None:
-            path_manager.set_output_filename_format(arguments.dirpath)
+        if path_manager_args.dirpath is not None:
+            path_manager.set_output_dir_format(path_manager_args.dirpath)
+            path_manager.set_page_image_dir_format(os.path.join(path_manager_args.dirpath, "pages"))
     except Exception as e:
-        logger.error(e)
         return e
 
     return path_manager

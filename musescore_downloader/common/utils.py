@@ -6,3 +6,4 @@ def initialize_vars(
     arguments: Namespace
 ):
     path_manager = PathManager()
+    

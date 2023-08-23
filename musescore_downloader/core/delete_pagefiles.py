@@ -14,3 +14,4 @@ def delete_pagefiles(file_infos: list[SaveCompleteObject]):
         if not any(it):
             os.rmdir(parent_dir)
     
+    return

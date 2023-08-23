@@ -7,17 +7,11 @@ from ..web_scraper.score_scraper import (
 
 def scrape_score(
     url,
-    scroll_element_selector,
-    page_container_selector,
-    total_pages_container_selector,
-    title_container_selector,
+    selectors_manager,
     logger
 ):
     scraper = ScoreScraper(
-        scroll_element_selector,
-        page_container_selector,
-        total_pages_container_selector,
-        title_container_selector
+        selectors_manager
     )
 
     scraper.set_url(url)
