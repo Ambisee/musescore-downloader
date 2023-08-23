@@ -4,6 +4,13 @@ from argparse import (
 )
 
 from ..managers.path_manager import PathManager
+from ..managers.selectors_manager import SelectorsManager
+from ..common.defaults import (
+    SCROLLER_ELEMENT_ID,
+    PAGE_CONTAINER_CLASS,
+    TITLE_CONTAINER_CLASS,
+    TOTAL_PAGES_CONTAINER_CLASS   
+)
 
 def handle_args():
     parser = ArgumentParser(
@@ -36,12 +43,22 @@ def handle_args():
 
 def initialize_path_manager(path_manager_args):
     path_manager = PathManager()
- 
+
     try:
-        if path_manager_args.dirpath is not None:
-            path_manager.set_output_dir_format(path_manager_args.dirpath)
-            path_manager.set_page_image_dir_format(os.path.join(path_manager_args.dirpath, "pages"))
+        if path_manager_args.get("dirpath", None) is not None:
+            path_manager.set_output_dir_format(path_manager_args['dirpath'])
+            path_manager.set_page_image_dir_format(os.path.join(path_manager_args['dirpath'], "pages"))
     except Exception as e:
         return e
 
     return path_manager
+
+def initialize_selectors_manager():
+    selectors_manager = SelectorsManager(
+        scroll_element_id=SCROLLER_ELEMENT_ID,
+        page_container_class=PAGE_CONTAINER_CLASS,
+        total_pages_container_class=TOTAL_PAGES_CONTAINER_CLASS,
+        title_container_class=TITLE_CONTAINER_CLASS
+    )
+
+    return selectors_manager

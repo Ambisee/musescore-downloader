@@ -1,3 +1,5 @@
+from typing import Literal
+
 from ..common.types.score_scraper_result import ScoreScraperResult
 from ..common.types.save_complete_object import SaveCompleteObject
 from ..common.types.content_object import ContentObject
@@ -15,7 +17,7 @@ def download_score(
     page_size,
     save_pagefiles,
     logger,
-):
+) -> Exception | Literal[0]:
     # 1. Retrieve links to each of the pages in the targeted music sheet
     score_scrape_result: Exception | ScoreScraperResult = scrape_score(
         url,

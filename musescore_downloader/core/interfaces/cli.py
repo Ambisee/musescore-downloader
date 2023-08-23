@@ -3,12 +3,13 @@ import logging
 
 from reportlab.lib.pagesizes import A4
 
-from ..initializers import handle_args, initialize_path_manager
+from ..initializers import handle_args, initialize_path_manager, initialize_selectors_manager
 
 from ...managers.path_manager import PathManager
 from ...managers.selectors_manager import SelectorsManager
 from ...common.types.score_scraper_result import ScoreScraperResult
 from ...common.constants import pagesize_alias_to_value
+from ..validation.log_errors import log_validation_errors
 from ...common.defaults import (
     SCROLLER_ELEMENT_ID,
     PAGE_CONTAINER_CLASS,
@@ -18,17 +19,6 @@ from ...common.defaults import (
 
 from ..validate_input import validate_input
 from ..download_score import download_score
-
-def log_validation_errors(error: dict[str, list], logger):
-    logger.error("An error occured during the process of input validation.")
-    for k in error.keys():
-        print(f"\t- {k} : ")
-        
-        for e in error[k]:
-            print(f"\t\t- {e}")
-    
-    return
-
 
 def cli_main():
     start = time.time()
@@ -48,23 +38,16 @@ def cli_main():
 
     logger.info("Input validation finished.")
 
-    selectors_manager = SelectorsManager(
-        SCROLLER_ELEMENT_ID,
-        PAGE_CONTAINER_CLASS,
-        TOTAL_PAGES_CONTAINER_CLASS,
-        TITLE_CONTAINER_CLASS
-    )
-
     page_size = A4
     if pagesize_alias_to_value.get(args.page_size) is not None:
         page_size = pagesize_alias_to_value[args.page_size]
 
-    path_manager: PathManager = initialize_path_manager(args)
+    selectors_manager = initialize_selectors_manager()
+    path_manager: PathManager = initialize_path_manager(args.__dict__)
     if issubclass(type(path_manager), Exception):
         logger.error(path_manager)
         logger.error("Process terminated due to an error.")
         return -1
-    
 
     result = download_score(
         args.url,
