@@ -1,6 +1,21 @@
-from musescore_downloader.core.initializers import handle_args
-from argparse import Namespace
+import logging
+from musescore_downloader.core.validation.log_errors import log_validation_errors
+from musescore_downloader.core.validation import (
+    ValidationPipeline,
+    ORValidator,
+    ANDValidator,
+    ValueValidator,
+    TypeValidator
+)
 
+pipe = ValidationPipeline({
+    "page_size": ORValidator([ValueValidator("A4"), ValueValidator("LETTER")]),
+    "dirpath": ANDValidator([TypeValidator(str)])
+})
 
-args: Namespace = handle_args()
-print(args.__dict__)
+val_res = pipe.validate({
+    "page_size": "F4",
+    "dirpath": None
+})
+
+log_validation_errors(val_res, logging)

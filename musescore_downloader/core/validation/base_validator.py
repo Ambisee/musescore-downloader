@@ -1,3 +1,7 @@
+from typing import Literal
+
+from musescore_downloader.core.validation.validation_result import ValidationResult
+
 class BaseValidator:
     """Base Validator Class
 
@@ -7,18 +11,20 @@ class BaseValidator:
 
     def __init__(
         self, 
-        valid_value,
-        required=False,
-        error_message=None,
+        validator_value,
     ):
-        self.valid_value = valid_value
-        self.required = required
-        self.error_message = error_message
+        self.validator_value = validator_value
+        self.error_message = ""
+        self.help_message = ""
 
-    def validate(self, value):
-        if value is None:
-            if self.required:
-                return ValueError("Required value cannot be None. Please enter a valid value.")
-            return None
+        self.build_error_message()
+        self.build_help_message()
 
-        return True
+    def build_error_message(self):
+        pass
+
+    def build_help_message(self):
+        pass
+
+    def validate(self, value) -> ValidationResult:
+        pass

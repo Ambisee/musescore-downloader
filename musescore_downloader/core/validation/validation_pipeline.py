@@ -1,4 +1,4 @@
-from .base_validator import BaseValidator
+from .base_validator import BaseValidator, ValidationResult
 
 class ValidationPipeline:
     def __init__(
@@ -9,7 +9,8 @@ class ValidationPipeline:
 
     def set_validations(self, validations):
         if validations is None:
-            self.validations: dict[str, list[BaseValidator]] = {}
+            self.validations: dict[str, BaseValidator] = {}
+            return
         
         self.validations = validations
 
@@ -20,24 +21,16 @@ class ValidationPipeline:
         self.validations[var_name].append(validator)
 
     def validate_var(self, var_name, value):
-        result = []
-        
-        for validator in self.validations[var_name]:
-            validator_res = validator.validate(value)
-            
-            if validator_res is not None:
-                result.append(validator_res)
-            
-        return result
+        return self.validations[var_name].validate(value)
 
     def validate(self, values: dict[str, any]):
         vars = self.validations.keys()
-        errors = {}
+        errors: dict[str, ValidationResult] = {}
 
         for var in vars:
             res = self.validate_var(var, values[var])
             
-            if len(res) > 0:
+            if not res.is_valid():
                 errors[var] = res
             
         return errors

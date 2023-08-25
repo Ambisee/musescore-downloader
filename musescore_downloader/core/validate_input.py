@@ -1,9 +1,12 @@
 from pathvalidate import validate_filepath
 
-from .validation.validation_pipeline import ValidationPipeline
-from .validation.choice_validator import ChoiceValidator
-from .validation.external_validator import ExternalValidator
-from .validation.type_validator import TypeValidator
+from .validation import (
+    ValidationPipeline,
+    TypeValidator, 
+    ValueValidator,
+    ORValidator,
+    ANDValidator,
+)
 
 def validate_path_format(path_format):
     try:
@@ -22,10 +25,15 @@ def validate_input(
 ):
     validator_pipe = ValidationPipeline(
         {
-            "url": [TypeValidator(str, required=True)],
-            "save_pagefiles": [TypeValidator(bool)],
-            "page_size": [ChoiceValidator(["A4", "LETTER"])],
-            "dirpath": [TypeValidator(str), ExternalValidator(validate_path_format)]
+            "url": TypeValidator(str),
+            "save_pagefiles": TypeValidator(bool),
+            "page_size": ORValidator([
+                ValueValidator("A4"),
+                ValueValidator("LETTER")
+            ]),
+            "dirpath": ANDValidator([
+                TypeValidator(str)
+            ])
         }
     )
 
