@@ -1,4 +1,5 @@
 from .base_validator import BaseValidator, ValidationResult
+from .validator_message.help_message_collection import HelpMessageCollection
 
 class ANDValidator(BaseValidator):
     
@@ -8,17 +9,18 @@ class ANDValidator(BaseValidator):
     ):
         super().__init__(valid_value)
 
-    def build_error_message(self):
-        self.error_message = "The input value failed to satisfy all conditions."
+    def build_error(self):
+        self.error = "The input value failed to satisfy all conditions."
 
-    def build_help_message(self):
-        self.help_message = "The input value must fulfill ALL of these requirements: \n\t"
+    def build_help(self):
+        message = "The input value must fulfill ALL of these requirements:"
+        help_messages = []
+
+        for validator in self.validator_value:
+            help_messages.append(validator.help)
         
-        for i, validator in enumerate(self.validator_value):
-            self.help_message += f"- {validator.help_message}"
+        self.help = HelpMessageCollection(message, help_messages)
 
-            if i < len(self.validator_value) - 1:
-                self.help_message += "\n\t"
 
     def validate(self, value):
         status = True
@@ -28,8 +30,8 @@ class ANDValidator(BaseValidator):
         
         result = ValidationResult(
             status,
-            self.error_message,
-            self.help_message
+            self.error,
+            self.help
         )
 
         return result

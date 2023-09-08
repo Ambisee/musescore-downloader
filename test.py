@@ -8,9 +8,12 @@ from musescore_downloader.core.validation import (
     TypeValidator
 )
 
+logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
+
+
 pipe = ValidationPipeline({
     "page_size": ORValidator([ValueValidator("A4"), ValueValidator("LETTER")]),
-    "dirpath": ANDValidator([TypeValidator(str)])
+    "dirpath": ANDValidator([ANDValidator([TypeValidator(str)])])
 })
 
 val_res = pipe.validate({

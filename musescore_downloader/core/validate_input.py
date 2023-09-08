@@ -1,9 +1,11 @@
 from pathvalidate import validate_filepath
 
+from .validation.external_validator import ValidationFunction
 from .validation import (
     ValidationPipeline,
     TypeValidator, 
     ValueValidator,
+    ExternalValidator,
     ORValidator,
     ANDValidator,
 )
@@ -15,10 +17,9 @@ def validate_path_format(path_format):
 
         validate_filepath(path_format % {'title': "hello_world"})
     except Exception as e:
-        return e
+        return False
     
-    return None
-
+    return True
 
 def validate_input(
     input_values: dict[str, any]
@@ -31,8 +32,17 @@ def validate_input(
                 ValueValidator("A4"),
                 ValueValidator("LETTER")
             ]),
-            "dirpath": ANDValidator([
-                TypeValidator(str)
+            "dirpath": ORValidator([
+                TypeValidator(type(None)),
+                ANDValidator([
+                    TypeValidator(str),
+                    ExternalValidator(
+                        ValidationFunction(
+                            validate_path_format, 
+                            "The value must be a valid pathname with no illegal characters"
+                        )
+                    )
+                ])
             ])
         }
     )

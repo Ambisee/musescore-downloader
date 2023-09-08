@@ -14,16 +14,16 @@ class BaseValidator:
         validator_value,
     ):
         self.validator_value = validator_value
-        self.error_message = ""
-        self.help_message = ""
+        self.error = ""
+        self.help = ""
 
-        self.build_error_message()
-        self.build_help_message()
+        self.build_error()
+        self.build_help()
 
-    def build_error_message(self):
+    def build_error(self):
         pass
 
-    def build_help_message(self):
+    def build_help(self):
         pass
 
     def validate(self, value) -> ValidationResult:

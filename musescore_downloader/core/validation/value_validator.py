@@ -1,6 +1,7 @@
 from musescore_downloader.core.validation.validation_result import ValidationResult
-from .validation_result import ValidationResult
-from .base_validator import BaseValidator
+from .validator_message import HelpMessage
+from . import ValidationResult
+from . import BaseValidator
 
 class ValueValidator(BaseValidator):
     def __init__(
@@ -9,19 +10,19 @@ class ValueValidator(BaseValidator):
     ):
         super().__init__(valid_value)
 
-    def build_error_message(self):
-        self.error_message = "Received an invalid value: %s"
+    def build_error(self):
+        self.error = "Received an invalid value: %s"
 
-    def build_help_message(self):
-        self.help_message = "Value must be equal to '%s'" % self.validator_value
+    def build_help(self):
+        self.help = HelpMessage("Value must be equal to '%s'" % self.validator_value)
         
     def validate(self, value) -> ValidationResult:
         status = (value == self.validator_value)
 
         result = ValidationResult(
             status,
-            self.error_message % value,
-            self.help_message
+            self.error % value,
+            self.help
         )
 
         return result

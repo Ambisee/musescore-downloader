@@ -1,3 +1,5 @@
+from .validator_message import BaseHelp
+
 class ValidationResult:
     """Validation result class
 
@@ -8,18 +10,18 @@ class ValidationResult:
     def __init__(
         self,
         status: bool,
-        error_message: str,
-        help_message: str
+        error: str,
+        help: BaseHelp
     ):
         self.status = status
-        self.error_message = error_message
-        self.help_message = help_message
+        self.error = error
+        self.help = help
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return self.status
 
-    def get_error(self):
-        return self.error_message
+    def get_error(self) -> str:
+        return self.error
     
-    def get_help(self):
-        return self.help_message
+    def get_help(self) -> BaseHelp:
+        return self.help

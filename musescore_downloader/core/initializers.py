@@ -31,11 +31,13 @@ def handle_args():
     parser.add_argument(
         "--page-size",
         help="the page size of the output PDF. Allowed values include the following literals: 'A4', 'LETTER'.",
+        type=str
     )
     parser.add_argument(
         "--save-pagefiles",
         help="sets whether to keep the pagefiles after the program ends.",
-        action="store_true"
+        action="store_true",
+        type=bool
     )
 
     args = parser.parse_args()

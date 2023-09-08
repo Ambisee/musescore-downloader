@@ -20,6 +20,11 @@ setup(
     packages=find_packages(),
     install_requires=[],
     keywords=['python', 'selenium', 'web scraper', 'musescore'],
+    entry_points={
+        'console scripts': [
+            'musescore_downloader = musescore_downloader:cli_main'
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: Microsoft :: Windows",
