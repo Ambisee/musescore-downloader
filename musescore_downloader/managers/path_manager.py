@@ -28,28 +28,31 @@ class PathManager:
         Filename format of the resulting PDF file. The format must include the `%(title)s` variable placeholder and must end with the `.pdf` extension.
     """
 
-    test_dir_format_obj = {
+    test_dir_format_obj: dict = {
         "title": "hello"
     }
 
-    test_filename_format_obj = {
+    test_filename_format_obj: dict = {
         "extension": ".pdf",
         "page_num": 0
     }
 
     def __init__(
         self,
-        page_image_dir_format=None,
-        page_image_filename_format=None,
-        output_dir_format=None,
-        output_filename_format=None,
-    ):
+        page_image_dir_format: str=None,
+        page_image_filename_format: str=None,
+        output_dir_format: str=None,
+        output_filename_format: str=None,
+    ) -> None:
         self.set_page_image_dir_format(page_image_dir_format)
         self.set_page_image_filename_format(page_image_filename_format)
         self.set_output_dir_format(output_dir_format)
         self.set_output_filename_format(output_filename_format)
 
-    def set_output_filename_format(self, output_filename_format):
+    def set_output_filename_format(
+        self, 
+        output_filename_format: str
+    ) -> None:
         """Set the output filename's format
 
         Parameter
@@ -80,7 +83,10 @@ class PathManager:
         validate_filepath(output_filename_format % PathManager.test_dir_format_obj)
         self.output_filename_format = output_filename_format
 
-    def set_output_dir_format(self, output_dir_format):
+    def set_output_dir_format(
+        self,
+        output_dir_format: str
+    ) -> None:
         """Sets the format of the directory path where the PDF file will be saved into.
 
         Parameters
@@ -110,7 +116,10 @@ class PathManager:
         validate_filepath(output_dir_format % PathManager.test_dir_format_obj)
         self.output_dir_format = output_dir_format
 
-    def set_page_image_dir_format(self, page_image_dir_format):
+    def set_page_image_dir_format(
+        self, 
+        page_image_dir_format: str
+    ) -> None:
         """Sets the format of the directory path where the page files will be stored in. 
 
         Parameters
@@ -140,7 +149,10 @@ class PathManager:
         validate_filepath(page_image_dir_format % PathManager.test_dir_format_obj)
         self.page_image_dir_format = page_image_dir_format
 
-    def set_page_image_filename_format(self, page_image_filename_format):
+    def set_page_image_filename_format(
+        self, 
+        page_image_filename_format: str
+    ) -> None:
         """Sets the format of the filename of the page files.
 
         Parameters
@@ -173,7 +185,12 @@ class PathManager:
         validate_filename(page_image_filename_format % PathManager.test_filename_format_obj)
         self.page_image_filename_format = page_image_filename_format
 
-    def get_page_image_filepath(self, page_num, title, extension):
+    def get_page_image_filepath(
+        self, 
+        page_num: int, 
+        title: str, 
+        extension: str
+    ) -> str:
         """Gets a formatted page file path.
 
         Parameters
@@ -198,7 +215,7 @@ class PathManager:
 
         return sanitize_filepath(path)
 
-    def get_output_filepath(self, title):
+    def get_output_filepath(self, title: str) -> str:
         """Gets a formatted path to the resulting PDF file.
         
         Parameters
@@ -217,7 +234,7 @@ class PathManager:
 
         return sanitize_filepath(path)
 
-    def get_page_image_dir(self, title):
+    def get_page_image_dir(self, title: str) -> str:
         """Gets a formatted path to the directory containing the page files.
 
         Parameters
@@ -236,7 +253,7 @@ class PathManager:
 
         return sanitize_filepath(path)
     
-    def get_output_dir(self, title):
+    def get_output_dir(self, title: str) -> str:
         """Gets a formatted path to a directory where the resulting PDF file will be placed in.
 
         Parameters
