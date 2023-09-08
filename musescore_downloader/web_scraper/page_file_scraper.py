@@ -23,14 +23,14 @@ class PageFileScraper:
         of the data it possesses in the music sheet.
     """
 
-    def __init__(self, urls, title):
-        self.urls = urls
-        self.title = title
+    def __init__(self, urls: list[str], title: str) -> None:
+        self.urls: list[str] = urls
+        self.title: str = title
 
-    def set_urls(self, urls):
+    def set_urls(self, urls: list[str]) -> None:
         self.urls = urls
 
-    def download_page(self, url, page_num):
+    def download_page(self, url: str, page_num: int) -> ContentObject:
         """Retrieves the image data of a single page.
         
         Parameters
@@ -52,7 +52,6 @@ class PageFileScraper:
             If a problem arises during the request to retrieve content.
         """
         resp = requests.get(url)
-
         resp.raise_for_status()
 
         result = ContentObject(
@@ -64,7 +63,7 @@ class PageFileScraper:
 
         return result
 
-    def download_callback(self, future: Future[ContentObject]):
+    def download_callback(self, future: Future[ContentObject]) -> None:
         """Callback function to be called when the download process of a single file is completed/
         
         Parameters
@@ -78,7 +77,7 @@ class PageFileScraper:
         """
         logging.info(f"Successfully retrieved page {future.result().page_num}'s contents.")
 
-    def execute(self): 
+    def execute(self) -> list[ContentObject]: 
         """Executes the webscraping process as specified by the class.
 
         Returns

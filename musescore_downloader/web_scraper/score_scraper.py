@@ -38,23 +38,23 @@ class ScoreScraper:
         selectors_manager: SelectorsManager,
         url: str | None = None,
         timeout: float = 10,
-    ):
-        self.selectors_manager = selectors_manager
+    ) -> None:
+        self.selectors_manager: SelectorsManager = selectors_manager
         self.driver: webdriver.Chrome | None = None
         self.url: str | None = url
         self.timeout: float = timeout
 
-    def set_url(self, url: str):
+    def set_url(self, url: str) -> None:
         self.url = url
 
-    def set_timeout(self, timeout: float):
+    def set_timeout(self, timeout: float) -> None:
         self.timeout = timeout
 
     def initialize(
         self, 
         use_headless: bool=True,
         window_size: None | tuple[int, int] | list[int, int]=None,
-    ):
+    ) -> None:
         """Initializes the webdriver instance.
         
         Parameters
@@ -97,7 +97,7 @@ class ScoreScraper:
 
         self.driver = webdriver.Chrome(options)
 
-    def execute(self):
+    def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
 
         Returns
