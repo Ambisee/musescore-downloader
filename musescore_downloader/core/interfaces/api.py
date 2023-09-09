@@ -4,18 +4,20 @@ from typing import Literal
 
 from reportlab.lib.pagesizes import A4
 
-
-from ..initializers import handle_args, initialize_path_manager, initialize_selectors_manager
-from ..validation.log_errors import log_validation_errors
-from ..validate_input import validate_input
-from ..download_score import download_score
-from ...common.constants import pagesize_alias_to_value
-from ...common.defaults import (
-    SCROLLER_ELEMENT_ID,
-    PAGE_CONTAINER_CLASS,
-    TOTAL_PAGES_CONTAINER_CLASS,
-    TITLE_CONTAINER_CLASS
+from .. import (
+    validate_input,
+    download_score
 )
+from ..initializers import (
+    handle_args, 
+    initialize_path_manager, 
+    initialize_selectors_manager
+)
+from ..validation import (
+    log_validation_errors,
+    ValidationResult
+)
+from ...common.constants import pagesize_alias_to_value
 
 from .. import (
     scrape_score,
@@ -26,11 +28,11 @@ from .. import (
 )
 
 def api_main(
-    url,
-    dirpath=None,
-    page_size='A4',
-    save_pagefiles=False
-) -> Exception | dict[str, list[Exception]] | Literal[0]:
+    url: str,
+    dirpath: str | None = None,
+    page_size: str ='A4',
+    save_pagefiles: bool =False
+) -> Exception | dict[str, ValidationResult] | Literal[0]:
     start = time.time()
     logger = logging
     logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
