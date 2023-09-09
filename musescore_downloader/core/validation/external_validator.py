@@ -1,10 +1,11 @@
 from . import BaseValidator, ValidationResult
+from .help import HelpMessage
 
 class ValidationFunction:
     def __init__(self, val_function, help_message="", error_message="External validation failed."):
             self.val_function = val_function
-            self.help_message = help_message 
-            self.error_message = error_message
+            self.help = help_message
+            self.error = error_message
 
 class ExternalValidator(BaseValidator):
     """Validator that uses a given function to validate a value
@@ -26,18 +27,18 @@ class ExternalValidator(BaseValidator):
         super().__init__(valid_value)
 
     def build_error(self):
-        self.error_message = self.validator_value.error_message
+        self.error = self.validator_value.error
 
     def build_help(self):
-        self.help_message = self.validator_value.help_message
+        self.help = HelpMessage(self.validator_value.help)
 
     def validate(self, value) -> ValidationResult:
         status = self.validator_value.val_function(value)
 
         result = ValidationResult(
             status,
-            self.error_message,
-            self.help_message
+            self.error,
+            self.help
         )
 
         return result
