@@ -36,16 +36,16 @@ class PDFGenerator:
         save_complete_objects: list[SaveCompleteObject],
         page_size: tuple[float, float],
         path_manager: PathManager
-    ):
-        self.title = title
-        self.save_complete_objects = save_complete_objects
-        self.page_size = page_size
-        self.path_manager = path_manager
+    ) -> None:
+        self.title: str = title
+        self.save_complete_objects: list[SaveCompleteObject] = save_complete_objects
+        self.page_size: tuple[float, float] = page_size
+        self.path_manager: PathManager = path_manager
     
-    def set_page_size(self, page_size: tuple[float, float]):
+    def set_page_size(self, page_size: tuple[float, float]) -> None:
         self.page_size = page_size
 
-    def scale_to_fit_page(self, drawing: Drawing):
+    def scale_to_fit_page(self, drawing: Drawing) -> None:
         """Resizes an SVG file into the dimensions of the page.
         
         Parameters
@@ -59,7 +59,7 @@ class PDFGenerator:
         """
         drawing.scale(self.page_size[0] / drawing.width, self.page_size[1] / drawing.height)
 
-    def add_svg(self, canvas: Canvas, save_complete_object: SaveCompleteObject):
+    def add_svg(self, canvas: Canvas, save_complete_object: SaveCompleteObject) -> None:
         """Adds a page file of type SVG into the PDF.
 
         Parameters
@@ -89,7 +89,7 @@ class PDFGenerator:
 
         renderPDF.draw(page_drawing, canvas, 0, 0)
 
-    def add_png(self, canvas: Canvas, save_complete_object: SaveCompleteObject):
+    def add_png(self, canvas: Canvas, save_complete_object: SaveCompleteObject) -> None:
         """Adds a page file of type PNG into the PDF.
 
         Parameters
@@ -117,7 +117,7 @@ class PDFGenerator:
         page_drawing = open(path)
         canvas.drawInlineImage(page_drawing, 0, 0, *self.page_size)
     
-    def execute(self):
+    def execute(self) -> None:
         """Executes the process.
 
         Returns

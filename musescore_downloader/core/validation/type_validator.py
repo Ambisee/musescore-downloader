@@ -1,6 +1,6 @@
 from .base_validator import BaseValidator
 from .validation_result import ValidationResult
-from .validator_message import HelpMessage
+from .help import HelpMessage
 
 class TypeValidator(BaseValidator):
     def __init__(

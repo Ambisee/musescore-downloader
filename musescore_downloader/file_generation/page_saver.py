@@ -1,5 +1,6 @@
 import os
 import logging
+from typing import Literal
 from concurrent.futures import (
     ThreadPoolExecutor, 
     Future, 
@@ -28,12 +29,12 @@ class PageSaver:
         title: str,
         content_objects: list[ContentObject],
         path_manager: PathManager
-    ):
-        self.title = title
-        self.content_objects = content_objects
-        self.path_manager = path_manager
+    ) -> None:
+        self.title: str = title
+        self.content_objects: list[ContentObject] = content_objects
+        self.path_manager: PathManager = path_manager
 
-    def ensure_dir_exists(self):
+    def ensure_dir_exists(self) -> dict[Literal["created_path", "path"], bool | str]:
         """Checks if the page files directory exists and creates one if it doesn't.
 
         Returns
@@ -55,7 +56,7 @@ class PageSaver:
         result["created_path"] = False
         return result
 
-    def save_page(self, content_obj: ContentObject):
+    def save_page(self, content_obj: ContentObject) -> SaveCompleteObject:
         """Saves the content of a page to a file.
 
         Parameters
@@ -86,10 +87,10 @@ class PageSaver:
             content_type_to_extension[content_obj.content_type]
         )
 
-    def download_callback(self, task: Future[SaveCompleteObject]):
+    def download_callback(self, task: Future[SaveCompleteObject]) -> None:
         logging.info(f"Finished saving page {task.result().page_num}.")
 
-    def execute(self):
+    def execute(self) -> list[SaveCompleteObject]:
         """Executes the process.
 
         Returns

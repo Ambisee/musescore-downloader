@@ -1,5 +1,5 @@
 from musescore_downloader.core.validation.validation_result import ValidationResult
-from .validator_message import HelpMessage
+from .help import HelpMessage
 from . import ValidationResult
 from . import BaseValidator
 

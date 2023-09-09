@@ -1,5 +1,5 @@
 from .base_validator import BaseValidator, ValidationResult
-from .validator_message.help_message_collection import HelpMessageCollection
+from .help import HelpMessageCollection
 
 class ANDValidator(BaseValidator):
     

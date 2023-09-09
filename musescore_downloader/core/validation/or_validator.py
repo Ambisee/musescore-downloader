@@ -1,6 +1,6 @@
 from musescore_downloader.core.validation.validation_result import ValidationResult
 from . import BaseValidator, ValidationResult
-from .validator_message import HelpMessageCollection
+from .help import HelpMessageCollection
 
 class ORValidator(BaseValidator):
     def __init__(self, valid_value):

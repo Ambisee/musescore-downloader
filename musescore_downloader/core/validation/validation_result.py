@@ -1,4 +1,4 @@
-from .validator_message import BaseHelp
+from .help import BaseHelp
 
 class ValidationResult:
     """Validation result class
