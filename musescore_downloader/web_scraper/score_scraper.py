@@ -14,8 +14,8 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from get_chrome_driver import GetChromeDriver
 
-from ..common.types.score_scraper_result import ScoreScraperResult
-from ..managers.selectors_manager import SelectorsManager
+from ..common.types import ScoreScraperResult
+from ..managers import SelectorsManager
 
 class UninitializedWebDriverError(Exception):
     """No webdriver initialized."""

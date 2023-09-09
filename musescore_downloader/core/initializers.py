@@ -1,6 +1,7 @@
 import os
 from argparse import (
     ArgumentParser,
+    Namespace
 )
 
 from ..managers.path_manager import PathManager
@@ -12,9 +13,9 @@ from ..common.defaults import (
     TOTAL_PAGES_CONTAINER_CLASS   
 )
 
-def handle_args():
+def handle_args() -> Namespace:
     parser = ArgumentParser(
-        prog="musescore_downloader",
+        prog="musescore-downloader",
         description="Utility for downloading music sheet from Musescore.com.",
         add_help=True
     )
@@ -31,19 +32,19 @@ def handle_args():
     parser.add_argument(
         "--page-size",
         help="the page size of the output PDF. Allowed values include the following literals: 'A4', 'LETTER'.",
+        default='A4',
         type=str
     )
     parser.add_argument(
         "--save-pagefiles",
         help="sets whether to keep the pagefiles after the program ends.",
         action="store_true",
-        type=bool
     )
 
     args = parser.parse_args()
     return args
 
-def initialize_path_manager(path_manager_args):
+def initialize_path_manager(path_manager_args: dict) -> PathManager | Exception:
     path_manager = PathManager()
 
     try:
@@ -55,7 +56,7 @@ def initialize_path_manager(path_manager_args):
 
     return path_manager
 
-def initialize_selectors_manager():
+def initialize_selectors_manager() -> SelectorsManager:
     selectors_manager = SelectorsManager(
         scroll_element_id=SCROLLER_ELEMENT_ID,
         page_container_class=PAGE_CONTAINER_CLASS,

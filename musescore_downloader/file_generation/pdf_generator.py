@@ -9,8 +9,8 @@ from reportlab.lib.pagesizes import A4, LETTER
 
 from PIL.Image import open
 
-from ..managers.path_manager import PathManager
-from ..common.types.save_complete_object import SaveCompleteObject
+from ..managers import PathManager
+from ..common.types import SaveCompleteObject
 
 class UnrecognizedFiletypeError(Exception):
     """Encountered a file with a foreign filetype."""

@@ -1,8 +1,12 @@
+from logging import Logger
 from typing import Literal
 
-from ..common.types.score_scraper_result import ScoreScraperResult
-from ..common.types.save_complete_object import SaveCompleteObject
-from ..common.types.content_object import ContentObject
+from ..managers import SelectorsManager, PathManager
+from ..common.types import (
+    ScoreScraperResult, 
+    SaveCompleteObject, 
+    ContentObject
+)
 
 from .scrape_score import scrape_score
 from .scrape_pages import scrape_pages
@@ -11,12 +15,12 @@ from .generate_pdf import generate_pdf
 from .delete_pagefiles import delete_pagefiles
 
 def download_score(
-    url,
-    selectors_manager,
-    path_manager,
-    page_size,
-    save_pagefiles,
-    logger,
+    url: str,
+    selectors_manager: SelectorsManager,
+    path_manager: PathManager,
+    page_size: tuple[float, float],
+    save_pagefiles: bool,
+    logger: Logger,
 ) -> Exception | Literal[0]:
     # 1. Retrieve links to each of the pages in the targeted music sheet
     score_scrape_result: Exception | ScoreScraperResult = scrape_score(

@@ -1,15 +1,20 @@
+from logging import Logger
+
 from selenium.common.exceptions import NoSuchElementException
 
-from ..web_scraper.score_scraper import (
+from ..web_scraper import (
     ScoreScraper,
-    UninitializedWebDriverError
+)
+from ..managers import SelectorsManager
+from ..common.types import (
+    ScoreScraperResult
 )
 
 def scrape_score(
-    url,
-    selectors_manager,
-    logger
-):
+    url: str,
+    selectors_manager: SelectorsManager,
+    logger: Logger
+) -> ScoreScraperResult | Exception:
     scraper = ScoreScraper(
         selectors_manager
     )

@@ -8,7 +8,7 @@ from concurrent.futures import (
 import requests
 from requests import RequestException
 
-from ..common.types.content_object import ContentObject
+from ..common.types import ContentObject
 
 class PageFileScraper:
     """Scrapes the image data from a given list of page URLs.

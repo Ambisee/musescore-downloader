@@ -1,11 +1,19 @@
-from ..file_generation.page_saver import PageSaver
+from logging import Logger
+
+from ..file_generation import PageSaver
+from ..managers import PathManager
+from ..common.types import (
+    SaveCompleteObject, 
+    ScoreScraperResult,
+    ContentObject
+)
 
 def save_pages(
-    scraper_result,
-    pf_scraper_result,
-    path_manager,
-    logger
-):
+    scraper_result: ScoreScraperResult,
+    pf_scraper_result: list[ContentObject],
+    path_manager: PathManager,
+    logger: Logger
+) -> list[SaveCompleteObject] | Exception:
     page_saver = PageSaver(
         scraper_result.title,
         pf_scraper_result,
@@ -18,4 +26,4 @@ def save_pages(
         logger.error(e)
         return e
     
-    return  result
+    return result

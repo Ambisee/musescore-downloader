@@ -8,9 +8,8 @@ from concurrent.futures import (
 )
 
 from ..common.constants import content_type_to_extension
-from ..common.types.content_object import ContentObject
-from ..common.types.save_complete_object import SaveCompleteObject
-from ..managers.path_manager import PathManager
+from ..common.types import ContentObject, SaveCompleteObject
+from ..managers import PathManager
 
 class PageSaver:
     """Saves the binary data of the pages into separate files.

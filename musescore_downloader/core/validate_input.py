@@ -2,6 +2,7 @@ from pathvalidate import validate_filepath
 
 from .validation.external_validator import ValidationFunction
 from .validation import (
+    ValidationResult,
     ValidationPipeline,
     TypeValidator, 
     ValueValidator,
@@ -10,7 +11,7 @@ from .validation import (
     ANDValidator,
 )
 
-def validate_path_format(path_format):
+def validate_path_format(path_format: str) -> bool:
     try:
         if "%(title)s" not in path_format:
             raise Exception("The provided directory format does not contain a %(title)s placeholder.")
@@ -23,7 +24,7 @@ def validate_path_format(path_format):
 
 def validate_input(
     input_values: dict[str, any]
-):
+) -> dict[str, ValidationResult]:
     validator_pipe = ValidationPipeline(
         {
             "url": TypeValidator(str),
