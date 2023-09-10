@@ -168,9 +168,10 @@ class PathManager:
         ------
         ValueError
             The provided path is missing one or more placeholder variable(s).
-        pathvalidate.error.ValidationError
-        - ErrorReason.INVALID_CHARACTER : The filepath contains invalid characters.
-        - ErrorReason.INVALID_LENGTH : The filepath exceeds the maximum length for a filepath.
+        pathvalidate.error.ValidationError(ErrorReason.INVALID_CHARACTER)
+            The filepath contains invalid characters.
+        pathvalidate.error.ValidationError(ErrorReason.INVALID_LENGTH)
+            The filepath exceeds the maximum length for a filepath.
         """
         if page_image_filename_format is None:
             self.page_image_filename_format = PAGE_IMAGE_FILENAME_FORMAT

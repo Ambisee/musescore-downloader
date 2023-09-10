@@ -87,6 +87,18 @@ class PageSaver:
         )
 
     def download_callback(self, task: Future[SaveCompleteObject]) -> None:
+        """Callback function when the process of saving the page content
+        is complete
+
+        Parameters
+        ----------
+        task : Future that returns a SaveCompleteObject
+            The thread process that downloads a page content to a file.
+        
+        Returns
+        -------
+        None
+        """
         logging.info(f"Finished saving page {task.result().page_num}.")
 
     def execute(self) -> list[SaveCompleteObject]:
