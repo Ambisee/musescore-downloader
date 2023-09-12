@@ -41,9 +41,9 @@ def scrape_score(
     )
 
     scraper.set_url(url)
-    scraper.initialize()
     
     try:
+        scraper.initialize()
         result = scraper.execute()
     except URLError as e:
         message = (
@@ -51,7 +51,7 @@ def scrape_score(
             "Please check your internet connection."
         )
         logger.error(message)
-        return InvalidURLError(message)
+        return NoConnectionError(message)
     except InvalidArgumentException:
         message = (
             "The scraper cannot retrieve the webpage."
@@ -65,7 +65,7 @@ def scrape_score(
             "Please ensure that the web URL is a valid Musescore URL."
         )
         logger.error(message)
-        return NoConnectionError(message)
+        return InvalidURLError(message)
     except Exception as e:
         logger.error(e)
         return e

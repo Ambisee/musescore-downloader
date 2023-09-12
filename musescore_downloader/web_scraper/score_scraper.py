@@ -81,10 +81,15 @@ class ScoreScraper:
             `window_size` is neither of type None nor list or tuple of ints.
         ValueError
             `window_size` has less than or more than 2 elements.
+        URLError
+            Unable to retrieve the web driver of the browser.    
         """
 
-        get_driver = GetChromeDriver()
-        get_driver.install()
+        try:
+            get_driver = GetChromeDriver()
+            get_driver.install()
+        except URLError as e:
+            raise e
 
         options = ChromeOptions()
 
@@ -143,12 +148,12 @@ class ScoreScraper:
         except InvalidArgumentException:
             self.shutdown_driver()
             raise InvalidArgumentException()
-        except URLError:
+        except URLError as e:
             self.shutdown_driver()
-            raise URLError()
+            raise e
         except TimeoutException:
-            raise NoSuchElementException()
             self.shutdown_driver()
+            raise NoSuchElementException()
 
         page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
         title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
