@@ -11,8 +11,18 @@ def SCORE_SCRAPER(SELECTORS_MANAGER):
     )
 
 
-def test_simple(SCORE_SCRAPER, MUSESCORE_URL):
+def test_simple(SCORE_SCRAPER: ScoreScraper, MUSESCORE_URL):
     SCORE_SCRAPER.set_url(MUSESCORE_URL)
+    SCORE_SCRAPER.initialize()
+
     res = SCORE_SCRAPER.execute()
 
     assert isinstance(res, ScoreScraperResult)
+
+
+def test_incorrect_init_args(SCORE_SCRAPER: ScoreScraper):
+    with pytest.raises(TypeError):
+        SCORE_SCRAPER.initialize(window_size=10)
+
+    with pytest.raises(ValueError):
+        SCORE_SCRAPER.initialize(window_size=(1,2,3,4))
