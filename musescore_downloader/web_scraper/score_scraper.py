@@ -1,11 +1,14 @@
+import os
 import logging
+from urllib.error import URLError
 
 import selenium
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions
 from selenium.common.exceptions import (
     TimeoutException, 
-    NoSuchElementException
+    NoSuchElementException,
+    InvalidArgumentException,
 )
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -14,11 +17,10 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from get_chrome_driver import GetChromeDriver
 
+
+from ..common.exceptions import UninitializedWebDriverError
 from ..common.types import ScoreScraperResult
 from ..managers import SelectorsManager
-
-class UninitializedWebDriverError(Exception):
-    """No webdriver initialized."""
 
 class ScoreScraper:
     """Scrapes the URLs that corresponds to the pages of a Musescore music sheet.
@@ -44,11 +46,14 @@ class ScoreScraper:
         self.url: str | None = url
         self.timeout: float = timeout
 
+
     def set_url(self, url: str) -> None:
         self.url = url
 
+
     def set_timeout(self, timeout: float) -> None:
         self.timeout = timeout
+
 
     def initialize(
         self, 
@@ -75,8 +80,9 @@ class ScoreScraper:
         TypeError
             `window_size` is neither of type None nor list or tuple of ints.
         ValueError
-            `window_size
+            `window_size` has less than or more than 2 elements.
         """
+
         get_driver = GetChromeDriver()
         get_driver.install()
 
@@ -97,6 +103,7 @@ class ScoreScraper:
 
         self.driver = webdriver.Chrome(options)
 
+
     def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
 
@@ -114,14 +121,17 @@ class ScoreScraper:
             The target URL is not set.
         NoSuchElementException
             The web driver cannot find a corresponding HTML element. Possible causes: 
-            - The scraper received an invalid Musescore URL.
+            - The scraper received a non-Musescore URL.
             - The scaper was given outdated CSS selectors.
             - The time to wait for the element to appear before timing out is too short.
+        URLError
+            The webdriver cannot connect to a web page. Possible causes:
+            - The scraper received an invalid web URL.
+            - The user is currently offline.
         """
-
         if not self.driver:
             raise UninitializedWebDriverError("Web driver is not initialized. Please initialize the scraper and set url for a music sheet on Musescore before running it.")
-        
+
         if not self.url:
             raise TypeError("The target URL is not set. Please initialize the scraper and set url for a music sheet on Musescore before running it.")
         
@@ -130,11 +140,15 @@ class ScoreScraper:
             initial_img_element:WebElement = WebDriverWait(self.driver, self.timeout).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.selectors_manager.page_container_selector} > img"))
             )
+        except InvalidArgumentException:
+            self.shutdown_driver()
+            raise InvalidArgumentException()
+        except URLError:
+            self.shutdown_driver()
+            raise URLError()
         except TimeoutException:
-            self.driver.close()
-            self.driver.quit()
-
-            raise NoSuchElementException("The initial page of the music sheet is not found. Please ensure that you have set the correct Musescore URL.")
+            raise NoSuchElementException()
+            self.shutdown_driver()
 
         page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
         title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
@@ -160,16 +174,16 @@ class ScoreScraper:
                     lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
                 )
             except TimeoutException:
-                self.driver.close()
-                self.driver.quit()
+                self.shutdown_driver()
+                raise NoSuchElementException()
+            except URLError:
+                self.shutdown_driver()
+                raise URLError()
 
-                raise NoSuchElementException("The next page cannot be found. The operation will be terminated. Please reinitialize the scraper and try again.")
-            
             image_urls.append(page_image_url)
             logging.info(f"Retrieved URL for page {i + 1}.")
 
-        self.driver.close()
-        self.driver.quit()
+        self.shutdown_driver()
 
         logging.info("The scraper has been closed. Please reinitialize the scraper before running it again.")
         logging.info("Finished retrieving image URLS for each page of the music sheet.")
@@ -179,3 +193,13 @@ class ScoreScraper:
             image_urls,
             total_pages,
         )
+
+    def shutdown_driver(self):
+        """Performs teardown on the currently active webdriver
+
+        Returns
+        -------
+        None
+        """
+        self.driver.close()
+        self.driver.quit()
