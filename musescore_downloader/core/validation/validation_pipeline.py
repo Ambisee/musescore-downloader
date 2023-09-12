@@ -25,7 +25,7 @@ class ValidationPipeline:
         errors: dict[str, ValidationResult] = {}
 
         for var in vars:
-            res = self.validate_var(var, values[var])
+            res = self.validate_var(var, values.get(var))
             
             if not res.is_valid():
                 errors[var] = res
