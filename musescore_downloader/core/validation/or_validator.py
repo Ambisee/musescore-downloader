@@ -3,7 +3,16 @@ from . import BaseValidator, ValidationResult
 from .help import HelpMessageCollection
 
 class ORValidator(BaseValidator):
-    def __init__(self, valid_value):
+    """Validates whether an input passes through at least one validator from a list of validators.
+
+    Attributes
+    ----------
+    validator_value : list of BaseValidator
+        The list of validator to test the input value against.
+    """
+
+    def __init__(self, valid_value: list[BaseValidator]):
+        self.validator_value: list[BaseValidator]
         super().__init__(valid_value)
 
     def build_error(self):
