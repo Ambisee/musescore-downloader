@@ -9,4 +9,4 @@ from .value_validator import ValueValidator
 from .external_validator import ExternalValidator, ValidationFunction
 
 from .validation_pipeline import ValidationPipeline
-from .log_errors import log_validation_errors
+from .utils import log_validation_errors

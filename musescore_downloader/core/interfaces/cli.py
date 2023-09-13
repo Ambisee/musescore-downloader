@@ -9,7 +9,7 @@ from ...managers.path_manager import PathManager
 from ...managers.selectors_manager import SelectorsManager
 from ...common.types.score_scraper_result import ScoreScraperResult
 from ...common.constants import pagesize_alias_to_value
-from ..validation.log_errors import log_validation_errors
+from ..validation import log_validation_errors
 from ...common.defaults import (
     SCROLLER_ELEMENT_ID,
     PAGE_CONTAINER_CLASS,

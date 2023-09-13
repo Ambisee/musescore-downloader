@@ -4,6 +4,8 @@ from typing import Literal
 
 from reportlab.lib.pagesizes import A4
 
+from ..validation.utils import log_validation_errors
+
 from .. import (
     validate_input,
     download_score
@@ -14,8 +16,8 @@ from ..initializers import (
     initialize_selectors_manager
 )
 from ..validation import (
-    log_validation_errors,
-    ValidationResult
+    ValidationResult,
+    log_validation_errors
 )
 from ...common.constants import pagesize_alias_to_value
 
