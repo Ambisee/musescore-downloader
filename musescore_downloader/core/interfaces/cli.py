@@ -14,7 +14,14 @@ from ..validation import log_validation_errors
 from ..utils import validate_input
 from ..download_score import download_score
 
-def cli_main():
+def cli_main() -> int:
+    """Main entry point for the CLI.
+
+    Returns
+    -------
+    int
+        1 if the process exits successfully, 0 otherwise.    
+    """
     start = time.time()
 
     logger = logging
@@ -43,7 +50,7 @@ def cli_main():
         logger.error("Process terminated due to an error.")
         return -1
 
-    result = download_score(
+    result: int | Exception = download_score(
         args.url,
         selectors_manager,
         path_manager,

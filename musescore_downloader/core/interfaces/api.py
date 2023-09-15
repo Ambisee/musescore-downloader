@@ -32,9 +32,31 @@ from ..utils import (
 def api_main(
     url: str,
     dirpath: str | None = None,
-    page_size: str ='A4',
-    save_pagefiles: bool =False
-) -> Exception | dict[str, ValidationResult] | Literal[0]:
+    page_size: str = 'A4',
+    save_pagefiles: bool = False
+) -> Exception | dict[str, ValidationResult] | int:
+    """Main entry point for APIs.
+    
+    Parameters
+    ----------
+    url : str
+        A Musescore URL that links to a music sheet.
+    dirpath : str
+        A filepath to a directory to store the output files.
+    page_size : str, default=`"A4"`
+        The size of the pages. Values can be either `'A4'` or `'LETTER'`. Defaults to `"A4"`.
+    save_pagefiles : bool, default=False
+        Determines whether to keep the individual page files or not. Defaults to False.
+    
+    Returns
+    -------
+    Exception | dict | int
+        If the arguments are not valid, a dict that maps the argument names to an error message.
+        Else if error encountered during the process, an exception with the corresponding error.
+        Else, the process is successful and returns the integer 0.
+
+    """
+    
     start = time.time()
     logger = logging
     logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
