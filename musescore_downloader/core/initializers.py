@@ -10,10 +10,10 @@ from ..common.defaults import (
     SCROLLER_ELEMENT_ID,
     PAGE_CONTAINER_CLASS,
     TITLE_CONTAINER_CLASS,
-    TOTAL_PAGES_CONTAINER_CLASS   
+    TOTAL_PAGES_CONTAINER_CLASS
 )
 
-def handle_args() -> Namespace:
+def initialize_args() -> Namespace:
     """Handles and stores the argument values.
 
     Returns

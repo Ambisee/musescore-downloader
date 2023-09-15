@@ -11,7 +11,7 @@ from .. import (
     download_score
 )
 from ..initializers import (
-    handle_args, 
+    initialize_args, 
     initialize_path_manager, 
     initialize_selectors_manager
 )
@@ -21,7 +21,7 @@ from ..validation import (
 )
 from ...common.constants import pagesize_alias_to_value
 
-from .. import (
+from ..utils import (
     scrape_score,
     scrape_pages,
     save_pages,

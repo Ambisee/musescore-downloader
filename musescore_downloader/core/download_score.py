@@ -1,5 +1,4 @@
 from logging import Logger
-from typing import Literal
 
 from ..managers import SelectorsManager, PathManager
 from ..common.types import (
@@ -8,11 +7,13 @@ from ..common.types import (
     ContentObject
 )
 
-from .scrape_score import scrape_score
-from .scrape_pages import scrape_pages
-from .save_pages import save_pages
-from .generate_pdf import generate_pdf
-from .delete_pagefiles import delete_pagefiles
+from .utils import (
+    scrape_score, 
+    scrape_pages, 
+    save_pages, 
+    generate_pdf, 
+    delete_pagefiles
+)
 
 def download_score(
     url: str,

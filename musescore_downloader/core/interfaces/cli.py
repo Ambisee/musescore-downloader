@@ -3,28 +3,22 @@ import logging
 
 from reportlab.lib.pagesizes import A4
 
-from ..initializers import handle_args, initialize_path_manager, initialize_selectors_manager
-
-from ...managers.path_manager import PathManager
-from ...managers.selectors_manager import SelectorsManager
-from ...common.types.score_scraper_result import ScoreScraperResult
-from ...common.constants import pagesize_alias_to_value
-from ..validation import log_validation_errors
-from ...common.defaults import (
-    SCROLLER_ELEMENT_ID,
-    PAGE_CONTAINER_CLASS,
-    TOTAL_PAGES_CONTAINER_CLASS,
-    TITLE_CONTAINER_CLASS
+from ..initializers import (
+    initialize_args, initialize_path_manager, initialize_selectors_manager
 )
 
-from ..validate_input import validate_input
+from ...managers.path_manager import PathManager
+from ...common.constants import pagesize_alias_to_value
+from ..validation import log_validation_errors
+
+from ..utils import validate_input
 from ..download_score import download_score
 
 def cli_main():
     start = time.time()
 
     logger = logging
-    args = handle_args()
+    args = initialize_args()
     logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
     logger.info("Starting...")
 

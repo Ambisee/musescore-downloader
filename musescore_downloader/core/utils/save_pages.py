@@ -1,9 +1,9 @@
 from logging import Logger
 
-from ..file_generation import PageSaver
-from ..managers import PathManager
-from ..common.exceptions.core import InvalidContentTypeError
-from ..common.types import (
+from ...file_generation import PageSaver
+from ...managers import PathManager
+from ...common.exceptions.core import InvalidContentTypeError
+from ...common.types import (
     SaveCompleteObject, 
     ScoreScraperResult,
     ContentObject

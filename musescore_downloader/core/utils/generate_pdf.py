@@ -1,8 +1,8 @@
 from logging import Logger
 
-from ..managers import PathManager
-from ..file_generation import PDFGenerator
-from ..common.types import ScoreScraperResult, SaveCompleteObject
+from ...managers import PathManager
+from ...file_generation import PDFGenerator
+from ...common.types import ScoreScraperResult, SaveCompleteObject
 
 def generate_pdf(
     scraper_result: ScoreScraperResult,

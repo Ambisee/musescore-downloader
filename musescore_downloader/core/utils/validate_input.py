@@ -1,7 +1,7 @@
 from pathvalidate import validate_filepath
 
-from .validation.external_validator import ValidationFunction
-from .validation import (
+from ..validation.external_validator import ValidationFunction
+from ..validation import (
     ValidationResult,
     ValidationPipeline,
     TypeValidator, 
