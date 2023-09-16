@@ -15,3 +15,6 @@ output
 **/config.ini
 musescore_downloader.py
 playground.py
+
+# Exclude
+!requirements.txt
