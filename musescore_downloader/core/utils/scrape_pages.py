@@ -1,7 +1,7 @@
 from logging import Logger
 
-from ..web_scraper import PageFileScraper
-from ..common.types import ScoreScraperResult, ContentObject
+from ...web_scraper import PageFileScraper
+from ...common.types import ScoreScraperResult, ContentObject
 
 def scrape_pages(
     scraper_result: ScoreScraperResult,

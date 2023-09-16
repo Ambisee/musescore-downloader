@@ -6,10 +6,10 @@ from selenium.common.exceptions import (
     InvalidArgumentException,
 )
 
-from ..web_scraper import ScoreScraper
-from ..managers import SelectorsManager
-from ..common.types import ScoreScraperResult
-from ..common.exceptions.core import (
+from ...web_scraper import ScoreScraper
+from ...managers import SelectorsManager
+from ...common.types import ScoreScraperResult
+from ...common.exceptions.core import (
     InvalidURLError, 
     NoConnectionError
 )
