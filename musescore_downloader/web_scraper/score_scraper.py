@@ -57,8 +57,8 @@ class ScoreScraper:
 
     def initialize(
         self, 
-        use_headless: bool=True,
-        window_size: None | tuple[int, int] | list[int, int]=None,
+        use_headless: bool = True,
+        window_size: None | tuple[int, int] | list[int, int] = None,
     ) -> None:
         """Initializes the webdriver instance.
         
@@ -92,12 +92,17 @@ class ScoreScraper:
             raise e
 
         options = ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         if window_size is not None:
             if not isinstance(window_size, (list, tuple)): 
-                raise TypeError(f"Expected `window_size` to be an instance of list or tuple, {type(window_size)} found.")
+                raise TypeError(
+                    f"Expected `window_size` to be an instance of list or tuple, {type(window_size)} found."
+                )
             if len(window_size) != 2:
-                raise ValueError(f"Expected `window_size` to be a list or tuple of length 2, found list or tuple of length {len(window_size)}.")
+                raise ValueError(
+                    f"Expected `window_size` to be a list or tuple of length 2, found list or tuple of length {len(window_size)}."
+                )
             
             options.add_argument(f"---window-size={window_size[0]},{window_size[1]}")
         else:
