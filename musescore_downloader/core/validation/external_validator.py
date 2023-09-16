@@ -45,10 +45,10 @@ class ExternalValidator(BaseValidator):
         super().__init__(valid_value)
 
     def build_error(self):
-        self.error = self.validator_value.error
+        self.error = self.validator_value.error_message
 
     def build_help(self):
-        self.help = HelpMessage(self.validator_value.help)
+        self.help = HelpMessage(self.validator_value.help_message)
 
     def validate(self, value) -> ValidationResult:
         status = self.validator_value.val_function(value)
