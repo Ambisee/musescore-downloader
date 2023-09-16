@@ -48,21 +48,21 @@ def scrape_score(
     except URLError as e:
         message = (
             "The scraper cannot retrieve the webpage."
-            "Please check your internet connection."
+            " Please check your internet connection."
         )
         logger.error(message)
         return NoConnectionError(message)
     except InvalidArgumentException:
         message = (
             "The scraper cannot retrieve the webpage."
-            "Please ensure that the web URL is a valid URL."
+            " Please ensure that the web URL is a valid URL."
         )
         logger.error(message)
         return InvalidURLError(message)
     except NoSuchElementException:
         message = (
             "The scraper cannot find the initial page of the music sheet."
-            "Please ensure that the web URL is a valid Musescore URL."
+            " Please ensure that the web URL is a valid Musescore URL."
         )
         logger.error(message)
         return InvalidURLError(message)
