@@ -14,11 +14,8 @@ class ValidationPipeline:
         
         self.validations = validations
 
-    def add_var(self, var_name):
-        self.validations[var_name] = []
-
     def add_validator(self, var_name, validator):
-        self.validations[var_name].append(validator)
+        self.validations[var_name] = validator
 
     def validate_var(self, var_name, value):
         return self.validations[var_name].validate(value)
@@ -28,7 +25,7 @@ class ValidationPipeline:
         errors: dict[str, ValidationResult] = {}
 
         for var in vars:
-            res = self.validate_var(var, values[var])
+            res = self.validate_var(var, values.get(var))
             
             if not res.is_valid():
                 errors[var] = res

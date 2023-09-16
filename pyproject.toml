@@ -1,0 +1,15 @@
+[project]
+name = "musescore-downloader"
+version = "1.0.0"
+dependencies = []
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project.scripts]
+musescore-downloader = "musescore_downloader:cli_main"
+
+[tool.setuptools.packages]
+find = {}

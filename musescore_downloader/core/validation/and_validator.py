@@ -1,12 +1,20 @@
 from .base_validator import BaseValidator, ValidationResult
-from .validator_message.help_message_collection import HelpMessageCollection
+from .help import HelpMessageCollection
 
 class ANDValidator(BaseValidator):
-    
+    """Validates whether an input passes through all validator checks in a list of validators.
+
+    Attributes
+    ----------
+    validator_value : list of BaseValidator
+        The list of validators to test the input value against.
+    """
+
     def __init__(
         self, 
         valid_value: list[BaseValidator]
     ):
+        self.validator_value: list[BaseValidator]
         super().__init__(valid_value)
 
     def build_error(self):

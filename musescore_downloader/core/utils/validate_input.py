@@ -1,7 +1,8 @@
 from pathvalidate import validate_filepath
 
-from .validation.external_validator import ValidationFunction
-from .validation import (
+from ..validation.external_validator import ValidationFunction
+from ..validation import (
+    ValidationResult,
     ValidationPipeline,
     TypeValidator, 
     ValueValidator,
@@ -10,7 +11,19 @@ from .validation import (
     ANDValidator,
 )
 
-def validate_path_format(path_format):
+def validate_path_format(path_format: str) -> bool:
+    """Validates a path format.
+    
+    Parameters
+    ----------
+    path_format : str
+        The path string to be validated.
+
+    Returns
+    -------
+    bool
+        True if the path_format is valid, otherwise False.
+    """
     try:
         if "%(title)s" not in path_format:
             raise Exception("The provided directory format does not contain a %(title)s placeholder.")
@@ -23,7 +36,19 @@ def validate_path_format(path_format):
 
 def validate_input(
     input_values: dict[str, any]
-):
+) -> dict[str, ValidationResult]:
+    """Validates the configuration values for the scraping process.
+
+    Parameters
+    ----------
+    input_values : dict
+        The collection of key-value pairs representing the configuration values.
+
+    Returns
+    -------
+    dict
+        The dictionary containing configuration keys and the error they encountered.
+    """
     validator_pipe = ValidationPipeline(
         {
             "url": TypeValidator(str),

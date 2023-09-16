@@ -1,12 +1,24 @@
 from .base_validator import BaseValidator
 from .validation_result import ValidationResult
-from .validator_message import HelpMessage
+from .help import HelpMessage
 
 class TypeValidator(BaseValidator):
+    """Validates whether the value type of the input matches a specific type
+
+    This validator checks whether an input is of a specific type. It will fail 
+    if the value is of a subtype of the validator type.
+
+    Attributes
+    ----------
+    validator_value : type
+        The object type to test the input value against.
+    """
+    
     def __init__(
         self, 
         valid_value: type
     ):
+        self.validator_value: type
         super().__init__(valid_value)
 
     def build_error(self):

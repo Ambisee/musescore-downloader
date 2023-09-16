@@ -1,12 +1,22 @@
-from typing import Literal
+from typing import Literal, Any
 
-from musescore_downloader.core.validation.validation_result import ValidationResult
+from . import ValidationResult
+from .help import HelpMessage
 
 class BaseValidator:
     """Base Validator Class
 
     *This class serves as a base class to concrete
     validators. Do not instantiate this class directly.
+
+    Attributes
+    ----------
+    validator_value : Any
+        The object that will be test against for input validation.
+    error : str
+        The error message if the validation process fails.
+    help : HelpMessage
+        The object containing instructions on what kind of input should be passed.
     """
 
     def __init__(
@@ -15,7 +25,7 @@ class BaseValidator:
     ):
         self.validator_value = validator_value
         self.error = ""
-        self.help = ""
+        self.help = HelpMessage("")
 
         self.build_error()
         self.build_help()

@@ -1,13 +1,23 @@
-from musescore_downloader.core.validation.validation_result import ValidationResult
-from .validator_message import HelpMessage
-from . import ValidationResult
-from . import BaseValidator
+from typing import Any
+
+from .help import HelpMessage
+from . import BaseValidator, ValidationResult
+
 
 class ValueValidator(BaseValidator):
+    """Validates whether the input value is equal to a specified value.
+    
+    Attributes
+    ----------
+    validator_value : Any
+        The value to be checked against.
+    """
+
     def __init__(
         self,
-        valid_value
+        valid_value: Any
     ):
+        self.validator_value: Any
         super().__init__(valid_value)
 
     def build_error(self):
