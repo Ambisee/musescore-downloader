@@ -6,3 +6,6 @@ class InvalidContentTypeError(Exception):
 
 class NoConnectionError(Exception):
     """The user is offline."""
+
+class UnexpectedError(Exception):
+    "The program encountered an unexpected error."

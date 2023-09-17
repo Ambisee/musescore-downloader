@@ -10,7 +10,8 @@ from ..common.defaults import (
     SCROLLER_ELEMENT_ID,
     PAGE_CONTAINER_CLASS,
     TITLE_CONTAINER_CLASS,
-    TOTAL_PAGES_CONTAINER_CLASS
+    TOTAL_PAGES_CONTAINER_CLASS,
+    POPUP_CLOSE_BUTTON_CLASS
 )
 
 def initialize_args() -> Namespace:
@@ -96,7 +97,8 @@ def initialize_selectors_manager() -> SelectorsManager:
         scroll_element_id=SCROLLER_ELEMENT_ID,
         page_container_class=PAGE_CONTAINER_CLASS,
         total_pages_container_class=TOTAL_PAGES_CONTAINER_CLASS,
-        title_container_class=TITLE_CONTAINER_CLASS
+        title_container_class=TITLE_CONTAINER_CLASS,
+        popup_close_button_class=POPUP_CLOSE_BUTTON_CLASS
     )
 
     return selectors_manager

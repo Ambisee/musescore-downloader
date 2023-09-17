@@ -18,7 +18,11 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from webdriver_manager.chrome import ChromeDriverManager
 
-from ..common.exceptions import UninitializedWebDriverError
+from ..common.exceptions import (
+    UninitializedWebDriverError,
+    PageElementNotFoundError,
+    InitialElementNotFoundError
+)
 from ..common.types import ScoreScraperResult
 from ..managers import SelectorsManager
 
@@ -98,6 +102,56 @@ class ScoreScraper:
         self.driver.close()
         self.driver.quit()
 
+    def find_initial_img_element(self):
+        try:
+            self.driver.get(self.url)
+            initial_img_element: WebElement = WebDriverWait(self.driver, self.timeout).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.selectors_manager.page_container_selector} > img"))
+            )
+        except InvalidArgumentException as e:
+            self.shutdown_driver()
+            raise e
+        except URLError as e:
+            self.shutdown_driver()
+            raise e
+        except TimeoutException:
+            if self.find_and_close_popup(): 
+                self.find_initial_img_element()
+
+            self.shutdown_driver()
+            raise InitialElementNotFoundError()
+        
+        return initial_img_element
+
+    def find_page_element(self, page_containers, i):
+        logging.info(f"Retrieving URL for page {i + 1}...")
+        self.driver.execute_script(f"pageContainers[{i}].scrollIntoViewIfNeeded()")
+        
+        try:
+            page_image_url: WebElement = WebDriverWait(self.driver, self.timeout).until(
+                    lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
+                )
+        except TimeoutException:
+            if self.find_and_close_popup():
+                self.find_page_element(page_containers, i)
+
+            self.shutdown_driver()
+            raise PageElementNotFoundError()
+        except URLError:
+            self.shutdown_driver()
+            raise URLError()
+        return page_image_url
+
+    def find_and_close_popup(self):
+        try:
+            self.driver.find_element(
+                By.CSS_SELECTOR, self.selectors_manager.popup_close_button_selector
+            ).click()
+            
+            return True
+        except NoSuchElementException:
+            return False
+
     def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
 
@@ -129,20 +183,7 @@ class ScoreScraper:
         if not self.url:
             raise TypeError("The target URL is not set. Please initialize the scraper and set url for a music sheet on Musescore before running it.")
         
-        try:
-            self.driver.get(self.url)
-            initial_img_element:WebElement = WebDriverWait(self.driver, self.timeout).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.selectors_manager.page_container_selector} > img"))
-            )
-        except InvalidArgumentException:
-            self.shutdown_driver()
-            raise InvalidArgumentException()
-        except URLError as e:
-            self.shutdown_driver()
-            raise e
-        except TimeoutException:
-            self.shutdown_driver()
-            raise NoSuchElementException()
+        initial_img_element = self.find_initial_img_element()
 
         page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
         title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
@@ -161,21 +202,7 @@ class ScoreScraper:
         logging.info("Retrieved URL for page 1.")
 
         for i in range(1, total_pages):
-            logging.info(f"Retrieving URL for page {i + 1}...")
-            self.driver.execute_script(f"pageContainers[{i}].scrollIntoViewIfNeeded()")
-
-            try:
-                page_image_url: WebElement = WebDriverWait(self.driver, self.timeout).until(
-                    lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
-                )
-            except TimeoutException:
-                popup = self.driver.find_element(By.CSS_SELECTOR, "zotra llJIE lpIAZ HFvdW N0P7K O9yD2 Cl2SE V5cJq u_VDg")
-
-                self.shutdown_driver()
-                raise NoSuchElementException()
-            except URLError:
-                self.shutdown_driver()
-                raise URLError()
+            page_image_url = self.find_page_element(page_containers, i)
 
             image_urls.append(page_image_url)
             logging.info(f"Retrieved URL for page {i + 1}.")

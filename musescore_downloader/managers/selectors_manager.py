@@ -41,12 +41,14 @@ class SelectorsManager:
         scroll_element_id: str,
         page_container_class: str,
         total_pages_container_class: str,
-        title_container_class: str
+        title_container_class: str,
+        popup_close_button_class: str
     ) -> None:
         self.set_scroll_element_selector(scroll_element_id)
         self.set_page_container_selector(page_container_class)
         self.set_total_pages_container_selector(total_pages_container_class)
         self.set_title_container_class(title_container_class)
+        self.set_popup_close_button_class(popup_close_button_class)
 
     def set_scroll_element_selector(self, scroll_element_id: str) -> None:
         self.scroll_element_selector = self.generate_id_selector(scroll_element_id)
@@ -59,3 +61,6 @@ class SelectorsManager:
     
     def set_title_container_class(self, title_container_class: str) -> None:
         self.title_container_selector = self.generate_class_selector(title_container_class)
+
+    def set_popup_close_button_class(self, close_button_class: str) -> None:
+        self.popup_close_button_selector = self.generate_class_selector(close_button_class)
