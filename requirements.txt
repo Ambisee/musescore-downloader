@@ -9,12 +9,11 @@ click==8.1.6
 colorama==0.4.6
 cssselect2==0.7.0
 exceptiongroup==1.1.2
-get-chrome-driver==1.3.19
 h11==0.14.0
 idna==3.4
 iniconfig==2.0.0
 lxml==4.9.3
--e git+https://github.com/Ambisee/musescore-downloader.git@238fbd9ab586cb7e23cc199b7de4c389333873b9#egg=musescore_downloader
+-e git+https://github.com/Ambisee/musescore-downloader.git@41e54fb1e688d82b1582409cb622ebbfc30b8e61#egg=musescore_downloader
 outcome==1.2.0
 packaging==23.1
 pathvalidate==3.1.0
@@ -26,6 +25,7 @@ PySocks==1.7.1
 pytest==7.4.2
 pytest-network==0.0.1
 pytest-socket==0.6.0
+python-dotenv==1.0.0
 reportlab==4.0.4
 requests==2.31.0
 selenium==4.10.0
@@ -39,5 +39,6 @@ trio-websocket==0.10.3
 typer==0.9.0
 typing_extensions==4.7.1
 urllib3==2.0.4
+webdriver-manager==4.0.0
 webencodings==0.5.1
 wsproto==1.2.0

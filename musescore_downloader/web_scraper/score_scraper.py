@@ -5,6 +5,7 @@ from urllib.error import URLError
 import selenium
 from selenium import webdriver
 from selenium.webdriver import ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.common.exceptions import (
     TimeoutException, 
     NoSuchElementException,
@@ -15,8 +16,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 
-from get_chrome_driver import GetChromeDriver
-
+from webdriver_manager.chrome import ChromeDriverManager
 
 from ..common.exceptions import UninitializedWebDriverError
 from ..common.types import ScoreScraperResult
@@ -50,10 +50,8 @@ class ScoreScraper:
     def set_url(self, url: str) -> None:
         self.url = url
 
-
     def set_timeout(self, timeout: float) -> None:
         self.timeout = timeout
-
 
     def initialize(
         self, 
@@ -82,17 +80,16 @@ class ScoreScraper:
         ValueError
             `window_size` has less than or more than 2 elements.
         URLError
-            Unable to retrieve the web driver of the browser.    
+            Unable to retrieve the web driver of the browser.
         """
 
         try:
-            get_driver = GetChromeDriver()
-            get_driver.install()
+            chrome_service = ChromeService(ChromeDriverManager().install())
         except URLError as e:
             raise e
 
-        options = ChromeOptions()
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        chrome_options = ChromeOptions()
+        chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
         if window_size is not None:
             if not isinstance(window_size, (list, tuple)): 
@@ -104,15 +101,25 @@ class ScoreScraper:
                     f"Expected `window_size` to be a list or tuple of length 2, found list or tuple of length {len(window_size)}."
                 )
             
-            options.add_argument(f"---window-size={window_size[0]},{window_size[1]}")
+            chrome_options.add_argument(f"---window-size={window_size[0]},{window_size[1]}")
         else:
-            options.add_argument("--window-size=1280,1080")
+            chrome_options.add_argument("--window-size=1280,1080")
 
         if use_headless:
-            options.add_argument("--headless=new")
+            chrome_options.add_argument("--headless=new")
 
-        self.driver = webdriver.Chrome(options)
+        self.driver = webdriver.Chrome(chrome_options, chrome_service)
+        # self.driver = webdriver.Chrome(chrome_options)
 
+    def shutdown_driver(self):
+        """Performs teardown on the currently active webdriver
+
+        Returns
+        -------
+        None
+        """
+        self.driver.close()
+        self.driver.quit()
 
     def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
@@ -175,6 +182,7 @@ class ScoreScraper:
 
         logging.info("Retrieving URL for page 1...")
         logging.info("Retrieved URL for page 1.")
+
         for i in range(1, total_pages):
             logging.info(f"Retrieving URL for page {i + 1}...")
             self.driver.execute_script(f"pageContainers[{i}].scrollIntoViewIfNeeded()")
@@ -184,6 +192,8 @@ class ScoreScraper:
                     lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
                 )
             except TimeoutException:
+                popup = self.driver.find_element(By.CSS_SELECTOR, "zotra llJIE lpIAZ HFvdW N0P7K O9yD2 Cl2SE V5cJq u_VDg")
+
                 self.shutdown_driver()
                 raise NoSuchElementException()
             except URLError:
@@ -203,13 +213,3 @@ class ScoreScraper:
             image_urls,
             total_pages,
         )
-
-    def shutdown_driver(self):
-        """Performs teardown on the currently active webdriver
-
-        Returns
-        -------
-        None
-        """
-        self.driver.close()
-        self.driver.quit()
