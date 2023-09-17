@@ -64,13 +64,21 @@ class ScoreScraper:
         ----------
         use_headless : bool, default=True
             Toggles the browser's headless mode.
-            
+        window_size : list or tuple of int, default=None
+            Specifies the window size of the initialized browser. The list or tuple must
+            have exactly two elements which represents the width and the height of the window respectively. 
+            Default value is `None` which tells the webdriver to use a window size of `1280x1080`.
+
         Returns
         -------
         None
 
         Raises
         ------
+        TypeError
+            `window_size` is neither of type None nor list or tuple of ints.
+        ValueError
+            `window_size` has less than or more than 2 elements.
         URLError
             Unable to retrieve the web driver of the browser.
         """
@@ -82,12 +90,26 @@ class ScoreScraper:
 
         chrome_options = ChromeOptions()
         chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        chrome_options.add_argument("--start-maximized")
+
+        if window_size is not None:
+            if not isinstance(window_size, (list, tuple)): 
+                raise TypeError(
+                    f"Expected `window_size` to be an instance of list or tuple, {type(window_size)} found."
+                )
+            if len(window_size) != 2:
+                raise ValueError(
+                    f"Expected `window_size` to be a list or tuple of length 2, found list or tuple of length {len(window_size)}."
+                )
+            
+            chrome_options.add_argument(f"---window-size={window_size[0]},{window_size[1]}")
+        else:
+            chrome_options.add_argument("--window-size=1280,1080")
 
         if use_headless:
             chrome_options.add_argument("--headless=new")
 
         self.driver = webdriver.Chrome(chrome_options, chrome_service)
+        # self.driver = webdriver.Chrome(chrome_options)
 
     def shutdown_driver(self):
         """Performs teardown on the currently active webdriver
