@@ -87,6 +87,7 @@ class ScoreScraper:
         chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
         chrome_options.add_argument("--start-maximized")
 
+
         if use_headless:
             chrome_options.add_argument("--headless=new")
 
@@ -128,7 +129,8 @@ class ScoreScraper:
             page_image_url: WebElement = WebDriverWait(self.driver, self.timeout).until(
                 lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
             )
-        except TimeoutException:
+        except TimeoutException as e:
+            print(e)
             self.shutdown_driver()
             raise PageElementNotFoundError()
         except URLError:
