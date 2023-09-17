@@ -115,9 +115,6 @@ class ScoreScraper:
             self.shutdown_driver()
             raise e
         except TimeoutException:
-            if self.find_and_close_popup(): 
-                self.find_initial_img_element()
-
             self.shutdown_driver()
             raise InitialElementNotFoundError()
         
@@ -126,31 +123,19 @@ class ScoreScraper:
     def find_page_element(self, page_containers, i):
         logging.info(f"Retrieving URL for page {i + 1}...")
         self.driver.execute_script(f"pageContainers[{i}].scrollIntoViewIfNeeded()")
-        
+
         try:
             page_image_url: WebElement = WebDriverWait(self.driver, self.timeout).until(
-                    lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
-                )
+                lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
+            )
         except TimeoutException:
-            if self.find_and_close_popup():
-                self.find_page_element(page_containers, i)
-
             self.shutdown_driver()
             raise PageElementNotFoundError()
         except URLError:
             self.shutdown_driver()
             raise URLError()
+        
         return page_image_url
-
-    def find_and_close_popup(self):
-        try:
-            self.driver.find_element(
-                By.CSS_SELECTOR, self.selectors_manager.popup_close_button_selector
-            ).click()
-            
-            return True
-        except NoSuchElementException:
-            return False
 
     def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
@@ -182,7 +167,7 @@ class ScoreScraper:
 
         if not self.url:
             raise TypeError("The target URL is not set. Please initialize the scraper and set url for a music sheet on Musescore before running it.")
-        
+
         initial_img_element = self.find_initial_img_element()
 
         page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)

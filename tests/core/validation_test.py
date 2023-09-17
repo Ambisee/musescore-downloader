@@ -16,7 +16,6 @@ from musescore_downloader.core.validation import (
 def pipeline():
     return ValidationPipeline()
 
-
 def test_value_validator(pipeline: ValidationPipeline):
     pipeline.add_validator("arg0", ValueValidator(-1))
 
@@ -30,7 +29,6 @@ def test_value_validator(pipeline: ValidationPipeline):
     assert isinstance(res_invalid, dict)
     assert len(res_invalid) == 1
     assert isinstance(res_invalid.get("arg0"), ValidationResult)
-
 
 def test_type_validator(pipeline: ValidationPipeline):
     pipeline.add_validator("arg0", TypeValidator(str))
@@ -46,7 +44,6 @@ def test_type_validator(pipeline: ValidationPipeline):
     assert len(res_invalid) == 1
     assert isinstance(res_invalid.get("arg0"), ValidationResult)
 
-
 def test_external_validator(pipeline: ValidationPipeline):
     pipeline.add_validator("arg0", ExternalValidator(ValidationFunction(lambda val: len(val) <= 2)))
 
@@ -60,7 +57,6 @@ def test_external_validator(pipeline: ValidationPipeline):
     assert isinstance(res_invalid, dict)
     assert len(res_invalid) == 1
     assert isinstance(res_invalid.get("arg0"), ValidationResult)
-
 
 def test_or_validator(pipeline: ValidationPipeline):
     pipeline.add_validator("arg0", ORValidator([ValueValidator("jack"), ValueValidator("john")]))
