@@ -9,9 +9,12 @@ from selenium.common.exceptions import (
 from ...web_scraper import ScoreScraper
 from ...managers import SelectorsManager
 from ...common.types import ScoreScraperResult
-from ...common.exceptions.core import (
+from ...common.exceptions import (
     InvalidURLError, 
-    NoConnectionError
+    UnexpectedError,
+    NoConnectionError,
+    PageElementNotFoundError,
+    InitialElementNotFoundError,
 )
 
 def scrape_score(
@@ -48,26 +51,33 @@ def scrape_score(
     except URLError as e:
         message = (
             "The scraper cannot retrieve the webpage."
-            "Please check your internet connection."
+            " Please check your internet connection."
         )
         logger.error(message)
         return NoConnectionError(message)
     except InvalidArgumentException:
         message = (
             "The scraper cannot retrieve the webpage."
-            "Please ensure that the web URL is a valid URL."
+            " Please ensure that the web URL is a valid URL."
         )
         logger.error(message)
         return InvalidURLError(message)
-    except NoSuchElementException:
+    except InitialElementNotFoundError:
         message = (
             "The scraper cannot find the initial page of the music sheet."
-            "Please ensure that the web URL is a valid Musescore URL."
+            " Please ensure that the web URL is a valid Musescore URL."
+            " If the URL is a valid Musescore URL, please report the issue"
+            " at https://github.com/Ambisee/musescore-downloader/issues."
         )
         logger.error(message)
         return InvalidURLError(message)
-    except Exception as e:
-        logger.error(e)
-        return e
+    except PageElementNotFoundError:
+        message = (
+            "The scraper cannot find the next page element of the music sheet."
+            " An unexpected error has occured. Please report the issue at "
+            "https://github.com/Ambisee/musescore-downloader/issues"
+        )
+        logger.error(message)
+        return UnexpectedError(message)
     
     return result

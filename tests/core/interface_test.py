@@ -22,7 +22,6 @@ def test_simple(MUSESCORE_URL):
         "River Flows in You - Yiruma - 10th Anniversary Version (Piano).pdf"
     ) == True
 
-
 def test_incorrect_valid_url():
     result = api_main(
         "https://google.com"
@@ -30,14 +29,12 @@ def test_incorrect_valid_url():
 
     assert isinstance(result, InvalidURLError)
 
-
 def test_incorrect_invalid_url():
     result = api_main(
         "asdfasdfasdfasdf"
     )
 
     assert isinstance(result, InvalidURLError)
-
 
 def test_incorrect_pagesize_value(MUSESCORE_URL):
     result = api_main(
