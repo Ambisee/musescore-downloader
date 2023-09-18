@@ -48,7 +48,7 @@ def scrape_score(
     debug = os.environ.get("DEBUG_ON", None)
 
     try:
-        scraper.initialize(use_headless=False if debug is None else True)
+        scraper.initialize(use_headless=False if debug is not None else True)
         result = scraper.execute()
     except URLError as e:
         message = (
