@@ -1,3 +1,4 @@
+import os
 from logging import Logger
 
 from urllib.error import URLError
@@ -44,9 +45,10 @@ def scrape_score(
     )
 
     scraper.set_url(url)
-    
+    debug = os.environ.get("DEBUG_ON", False)
+
     try:
-        scraper.initialize()
+        scraper.initialize(use_headless=False if debug else True)
         result = scraper.execute()
     except URLError as e:
         message = (
