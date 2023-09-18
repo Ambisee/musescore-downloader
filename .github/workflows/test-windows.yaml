@@ -1,4 +1,4 @@
-name: "Tests"
+name: "Tests - Windows"
 
 on: 
     workflow_dispatch:
@@ -17,21 +17,12 @@ jobs:
         
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest, macos-latest]
+                os: [windows-latest]
                 python-versions: [3.11]
                 
         steps:
             - uses: actions/checkout@v3
             
-            - uses: browser-actions/setup-chrome@v1
-              id: setup-chrome
-            
-            - run: chrome --version
-
-            - run: |
-                echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
-                ${{ steps.setup-chrome.outputs.chrome-path }} --version
-
             - name: Set up Python
               uses: actions/setup-python@v4
               with:
