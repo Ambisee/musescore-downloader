@@ -71,11 +71,11 @@ def scrape_score(
         )
         logger.error(message)
         return InvalidURLError(message)
-    except PageElementNotFoundError:
+    except PageElementNotFoundError as e:
         message = (
-            "The scraper cannot find the next page element of the music sheet."
+            f"The scraper cannot find the next page element of the music sheet (page {str(e)})."
             " An unexpected error has occured. Please report the issue at "
-            "https://github.com/Ambisee/musescore-downloader/issues"
+            "https://github.com/Ambisee/musescore-downloader/issues."
         )
         logger.error(message)
         return UnexpectedError(message)

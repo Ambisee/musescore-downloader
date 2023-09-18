@@ -130,9 +130,8 @@ class ScoreScraper:
                 lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
             )
         except TimeoutException as e:
-            print(e)
             self.shutdown_driver()
-            raise PageElementNotFoundError()
+            raise PageElementNotFoundError(i)
         except URLError:
             self.shutdown_driver()
             raise URLError()
