@@ -11,6 +11,8 @@ on:
 jobs:
     test:
         runs-on: ${{ matrix.os }}
+        env:
+            DEBUG_ON: "True"
         defaults:
             run:
                 working-directory: ./
