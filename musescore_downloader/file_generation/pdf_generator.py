@@ -117,12 +117,13 @@ class PDFGenerator:
         page_drawing = open(path)
         canvas.drawInlineImage(page_drawing, 0, 0, *self.page_size)
     
-    def execute(self) -> None:
+    def execute(self) -> str:
         """Executes the process.
 
         Returns
         -------
-        None
+        str
+            The filepath to the generated PDF.
 
         Raises
         ------
@@ -152,4 +153,4 @@ class PDFGenerator:
         file.save()
         logging.info(f"Finished putting everything into a PDF file.")
 
-        return
+        return output_path

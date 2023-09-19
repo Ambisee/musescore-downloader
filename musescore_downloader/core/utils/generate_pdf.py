@@ -10,7 +10,7 @@ def generate_pdf(
     page_size: tuple[float, float],
     path_manager: PathManager,
     logger: Logger
-) -> None | Exception:
+) -> str | Exception:
     """Merges the page files into a single PDF file and saves it into the filesystem.
 
     Parameters
@@ -29,8 +29,8 @@ def generate_pdf(
 
     Returns
     -------
-    None or Exception
-        If successful, nothing is returned.
+    str or Exception
+        If successful, returns the filepath to the generated PDF file.
         Else, an exception detailing the error encountered.
     """
     pdf_generator = PDFGenerator(

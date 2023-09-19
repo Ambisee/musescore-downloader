@@ -22,7 +22,7 @@ def download_score(
     page_size: tuple[float, float],
     save_pagefiles: bool,
     logger: Logger,
-) -> int | Exception:
+) -> str | Exception:
     """Downloads a Musescore music sheet as a PDF.
     
     Parameters
@@ -43,8 +43,8 @@ def download_score(
 
     Returns
     -------
-    int or Exception
-        If successful, returns a 0.
+    str or Exception
+        If successful, returns the filepath to the PDF.
         Else, an exception detailing the error encountered.
     """
     # 1. Retrieve links to each of the pages in the targeted music sheet
@@ -79,7 +79,7 @@ def download_score(
         return page_saver_result
 
     # 4. Merge the page files into one PDF
-    pdf_generation_result = generate_pdf(
+    pdf_generation_result: Exception | str = generate_pdf(
         score_scrape_result,
         page_saver_result,
         page_size,
@@ -89,9 +89,8 @@ def download_score(
     
     if issubclass(type(pdf_generation_result), Exception):
         logger.error("Process terminated due to an error.")
-        return pdf_generation_result
     
     if not save_pagefiles:
         delete_pagefiles(page_saver_result)
 
-    return 0
+    return pdf_generation_result

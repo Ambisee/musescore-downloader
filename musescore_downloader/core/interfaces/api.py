@@ -34,7 +34,7 @@ def api_main(
     dirpath: str | None = None,
     page_size: str = 'A4',
     save_pagefiles: bool = False
-) -> Exception | dict[str, ValidationResult] | int:
+) -> Exception | dict[str, ValidationResult] | str:
     """Main entry point for APIs.
     
     Parameters
@@ -99,4 +99,4 @@ def api_main(
         return result
 
     logging.info(f"Process finished in {time.time() - start} seconds.")
-    return 0
+    return result

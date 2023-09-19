@@ -14,7 +14,7 @@ def test_simple(MUSESCORE_URL):
         MUSESCORE_URL
     )
 
-    assert result == 0
+    assert isinstance(result, str)
     assert os.path.exists(
         "./"
         "output/"
