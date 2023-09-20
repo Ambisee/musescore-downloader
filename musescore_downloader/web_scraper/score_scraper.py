@@ -131,17 +131,20 @@ class ScoreScraper:
         
         return initial_img_element
 
-    def find_page_element(self, page_containers, i):
-        logging.info(f"Retrieving URL for page {i + 1}...")
+    def try_get_page_element(self, driver, page_containers, i):
         self.driver.execute_script(
             "pageContainers[arguments[0]].scrollIntoView({ block: arguments[1] });", 
             i,
             "center"
         )
+        return page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
 
+    def find_page_element(self, page_containers, i):
+        logging.info(f"Retrieving URL for page {i + 1}...")
+        
         try:
             page_image_url: str = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
+                lambda driver: self.try_get_page_element(driver, page_containers, i)
             )
         except TimeoutException as e:
             self.shutdown_driver()
