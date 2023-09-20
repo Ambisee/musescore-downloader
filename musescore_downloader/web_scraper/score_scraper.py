@@ -85,6 +85,7 @@ class ScoreScraper:
 
         chrome_options = ChromeOptions()
         chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--start-maximized")
 
 
