@@ -1,7 +1,8 @@
 from .web_scraper import (
     UninitializedWebDriverError,
     InitialElementNotFoundError,
-    PageElementNotFoundError
+    MetadataElementNotFoundError,
+    PageElementNotFoundError,
 )
 from .core import (
     NoConnectionError,
