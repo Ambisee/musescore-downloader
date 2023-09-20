@@ -13,8 +13,13 @@ output
 **/*.txt
 **/*.ipynb  
 **/config.ini
+geckodriver.log
 musescore_downloader.py
 playground.py
+
+# Docker
+Dockerfile
+.dockerignore
 
 # Exclude
 !requirements.txt

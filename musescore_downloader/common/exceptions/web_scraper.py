@@ -6,3 +6,6 @@ class InitialElementNotFoundError(Exception):
 
 class PageElementNotFoundError(Exception):
     """Unable to retrieve the next page element."""
+
+class MetadataElementNotFoundError(Exception):
+    """Unable to retrieve the HTML element that contains the music sheet's metadata."""

@@ -1,4 +1,3 @@
-import os
 from logging import Logger
 
 from urllib.error import URLError
@@ -16,6 +15,7 @@ from ...common.exceptions import (
     NoConnectionError,
     PageElementNotFoundError,
     InitialElementNotFoundError,
+    MetadataElementNotFoundError,
 )
 
 def scrape_score(
@@ -45,10 +45,9 @@ def scrape_score(
     )
 
     scraper.set_url(url)
-    debug = os.environ.get("DEBUG_ON", None)
-
+    
     try:
-        scraper.initialize(use_headless=False if debug is not None else True)
+        scraper.initialize()
         result = scraper.execute()
     except URLError as e:
         message = (
@@ -73,6 +72,14 @@ def scrape_score(
         )
         logger.error(message)
         return InvalidURLError(message)
+    except MetadataElementNotFoundError as e:
+        message = (
+            "The scraper cannot find the element that contains the {}."
+            " Please report the issue at "
+            "https://github.com/Ambisee/musescore-downloader/issues."
+        )
+        logger.error(message)
+        return UnexpectedError(message)
     except PageElementNotFoundError as e:
         message = (
             f"The scraper cannot find the next page element of the music sheet (page {str(e)})."
