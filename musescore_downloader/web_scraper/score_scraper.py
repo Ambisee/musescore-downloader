@@ -131,8 +131,8 @@ class ScoreScraper:
         logging.info(f"Retrieved the title of the music sheet: {title}")
         logging.info(f"Retrieved the number of total pages in the music sheet: {total_pages} pages in total")
 
-        self.driver.execute_script(f"window.scrollElement = document.querySelector(arguments[0]);", self.selectors_manager.scroll_element_selector)
-        self.driver.execute_script(f"window.pageContainers = document.querySelectorAll(arguments[0]);", self.selectors_manager.page_container_selector)
+        # self.driver.execute_script(f"window.scrollElement = document.querySelector(arguments[0]);", self.selectors_manager.scroll_element_selector)
+        # self.driver.execute_script(f"window.pageContainers = document.querySelectorAll(arguments[0]);", self.selectors_manager.page_container_selector)
 
         image_urls = [initial_img_element.get_attribute("src")]
 
@@ -143,8 +143,8 @@ class ScoreScraper:
             logging.info(f"Retrieving URL for page {i + 1}...")
 
             self.driver.execute_script(
-                "window.pageContainers[arguments[0]].scrollIntoView({ block: arguments[1] });", 
-                i,
+                "arguments[0].scrollIntoView({ block: arguments[1] });", 
+                page_containers[i],
                 "center"
             )
     
