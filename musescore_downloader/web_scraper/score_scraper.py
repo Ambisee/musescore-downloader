@@ -85,33 +85,27 @@ class ScoreScraper:
         
         return initial_img_element
 
-    def try_get_page_element(self, driver, page_containers, i):
+    def find_page_element(self, page_containers, i):
+        logging.info(f"Retrieving URL for page {i + 1}...")
+        
         self.driver.execute_script(
             "window.pageContainers[arguments[0]].scrollIntoView({ block: arguments[1] });", 
             i,
             "center"
         )
-        return page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
 
-    def find_page_element(self, page_containers, i):
-        logging.info(f"Retrieving URL for page {i + 1}...")
+        page_image_url = page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
         
-        try:
-            page_image_url: str = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: self.try_get_page_element(driver, page_containers, i)
-            )
-        except TimeoutException as e:
-            self.shutdown_driver()
-            raise PageElementNotFoundError(i + 1)
-        except URLError:
-            self.shutdown_driver()
-            raise URLError()
-        except Exception as e:
-            self.shutdown_driver()
-            raise e
         
         return page_image_url
 
+    def find_metadata_elements(self):
+        page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
+        title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
+        total_pages = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
+        
+        return page_containers, title, total_pages
+    
     def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
 
@@ -154,11 +148,6 @@ class ScoreScraper:
         self.driver.execute_script(f"window.scrollElement = document.querySelector(arguments[0]);", self.selectors_manager.scroll_element_selector)
         self.driver.execute_script(f"window.pageContainers = document.querySelectorAll(arguments[0]);", self.selectors_manager.page_container_selector)
 
-        self.driver.execute_script(f"console.log(window.scrollElement);")
-        self.driver.execute_script(f"console.log(scrollElement);")
-        self.driver.execute_script(f"console.log(scrollElement);")
-        self.driver.execute_script(f"console.log(window.pageContainers);")
-
         image_urls = [initial_img_element.get_attribute("src")]
 
         logging.info("Retrieving URL for page 1...")
@@ -170,36 +159,12 @@ class ScoreScraper:
             image_urls.append(page_image_url)
             logging.info(f"Retrieved URL for page {i + 1}.")
 
-        logging.info(self.driver.get_log('browser'))
         self.shutdown_driver()
 
-        logging.info("The scraper has been closed. Please reinitialize the scraper before running it again.")
         logging.info("Finished retrieving image URLS for each page of the music sheet.")
-
 
         return ScoreScraperResult(
             title,
             image_urls,
             total_pages,
         )
-
-    def find_metadata_elements(self):
-        try:
-            page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
-            # title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
-            # total_pages = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
-            
-            title = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
-            )
-
-            total_pages = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
-            )
-        except NoSuchElementException as e:
-            raise PageElementNotFoundError()
-        except TimeoutException as e:
-            raise MetadataElementNotFoundError(e)
-        
-        return page_containers, title, total_pages
-        

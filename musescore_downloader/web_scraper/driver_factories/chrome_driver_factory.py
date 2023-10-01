@@ -23,7 +23,7 @@ class ChromeDriverFactory(BaseDriverFactory):
         service = ChromeService(driver_path)
 
         options = ChromeOptions()
-        # options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--start-maximized")
         options.add_argument("--no-sandbox")
