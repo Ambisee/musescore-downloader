@@ -13,7 +13,7 @@ h11==0.14.0
 idna==3.4
 iniconfig==2.0.0
 lxml==4.9.3
--e git+https://github.com/Ambisee/musescore-downloader.git@41e54fb1e688d82b1582409cb622ebbfc30b8e61#egg=musescore_downloader
+-e git+https://github.com/Ambisee/musescore-downloader.git@e689dbc4a8e7315d61c92c5352a1cde529cc3a6a#egg=musescore_downloader
 outcome==1.2.0
 packaging==23.1
 pathvalidate==3.1.0
