@@ -85,20 +85,6 @@ class ScoreScraper:
         
         return initial_img_element
 
-    def find_page_element(self, page_containers, i):
-        logging.info(f"Retrieving URL for page {i + 1}...")
-        
-        self.driver.execute_script(
-            "window.pageContainers[arguments[0]].scrollIntoView({ block: arguments[1] });", 
-            i,
-            "center"
-        )
-
-        page_image_url = page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
-        
-        
-        return page_image_url
-
     def find_metadata_elements(self):
         page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
         title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
@@ -154,7 +140,17 @@ class ScoreScraper:
         logging.info("Retrieved URL for page 1.")
 
         for i in range(1, total_pages):
-            page_image_url = self.find_page_element(page_containers, i)
+            logging.info(f"Retrieving URL for page {i + 1}...")
+
+            self.driver.execute_script(
+                "window.pageContainers[arguments[0]].scrollIntoView({ block: arguments[1] });", 
+                i,
+                "center"
+            )
+    
+            page_image_url = WebDriverWait(self.driver, self.timeout).until(
+                lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
+            )
 
             image_urls.append(page_image_url)
             logging.info(f"Retrieved URL for page {i + 1}.")
