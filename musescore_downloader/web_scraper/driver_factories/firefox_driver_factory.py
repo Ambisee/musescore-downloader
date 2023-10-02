@@ -12,10 +12,6 @@ class FirefoxDriverFactory(BaseDriverFactory):
         manager = GeckoDriverManager().install()
 
         options = FirefoxOptions()
-        options.add_argument('-headless')
-        options.add_argument('-devtools')
-
         service = FirefoxService(manager)
         
-        return Firefox(options, service)
-    
+        return Firefox()
