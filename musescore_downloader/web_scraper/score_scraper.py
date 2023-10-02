@@ -67,6 +67,7 @@ class ScoreScraper:
     def find_initial_img_element(self):
         try:
             self.driver.get(self.url)
+            self.driver.set_window_size(1920, 1080)
             initial_img_element: WebElement = WebDriverWait(self.driver, self.timeout).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.selectors_manager.page_container_selector} > img"))
             )
@@ -131,9 +132,6 @@ class ScoreScraper:
         logging.info(f"Retrieved the title of the music sheet: {title}")
         logging.info(f"Retrieved the number of total pages in the music sheet: {total_pages} pages in total")
 
-        # self.driver.execute_script(f"window.scrollElement = document.querySelector(arguments[0]);", self.selectors_manager.scroll_element_selector)
-        # self.driver.execute_script(f"window.pageContainers = document.querySelectorAll(arguments[0]);", self.selectors_manager.page_container_selector)
-
         image_urls = [initial_img_element.get_attribute("src")]
 
         logging.info("Retrieving URL for page 1...")
@@ -147,7 +145,8 @@ class ScoreScraper:
                 page_containers[i],
                 "center"
             )
-    
+
+            self.driver.save_screenshot(f"./page_{i + 1}_screenshot.png")
             page_image_url = WebDriverWait(self.driver, self.timeout).until(
                 lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
             )
