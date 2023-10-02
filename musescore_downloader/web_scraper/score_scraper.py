@@ -126,8 +126,11 @@ class ScoreScraper:
 
         initial_img_element = self.find_initial_img_element()
 
-        page_containers, title, total_pages = self.find_metadata_elements()
-        total_pages = int(total_pages)
+        try:
+            page_containers, title, total_pages = self.find_metadata_elements()
+            total_pages = int(total_pages)
+        except Exception as e:
+            raise MetadataElementNotFoundError()
     
         logging.info(f"Retrieved the title of the music sheet: {title}")
         logging.info(f"Retrieved the number of total pages in the music sheet: {total_pages} pages in total")
@@ -146,10 +149,12 @@ class ScoreScraper:
                 "center"
             )
 
-            self.driver.save_screenshot(f"./page_{i + 1}_screenshot.png")
-            page_image_url = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
-            )
+            try:
+                page_image_url = WebDriverWait(self.driver, self.timeout).until(
+                    lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
+                )
+            except TimeoutException:
+                raise PageElementNotFoundError()
 
             image_urls.append(page_image_url)
             logging.info(f"Retrieved URL for page {i + 1}.")
