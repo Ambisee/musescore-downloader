@@ -1,3 +1,4 @@
+import sys
 from logging import Logger
 
 from urllib.error import URLError
@@ -7,7 +8,7 @@ from selenium.common.exceptions import (
 )
 
 from ...web_scraper import ScoreScraper
-from ...web_scraper.driver_factories import ChromeDriverFactory
+from ...web_scraper.driver_factories import FirefoxDriverFactory, ChromeDriverFactory
 from ...managers import SelectorsManager
 from ...common.types import ScoreScraperResult
 from ...common.exceptions import (
@@ -41,7 +42,10 @@ def scrape_score(
         If successful, the object that stores the result of the scraper. Else,
         An exception detailing the error encountered during the process.    
     """
-    driver = ChromeDriverFactory().create_driver()
+    if sys.platform == "linux":
+        driver = FirefoxDriverFactory().create_driver()
+    else:
+        driver = ChromeDriverFactory().create_driver()
 
     scraper = ScoreScraper(
         selectors_manager,

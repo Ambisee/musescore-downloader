@@ -1,2 +1,3 @@
 from .base_driver_factory import BaseDriverFactory
 from .chrome_driver_factory import ChromeDriverFactory
+from .firefox_driver_factory import FirefoxDriverFactory
