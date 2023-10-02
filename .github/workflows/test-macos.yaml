@@ -1,4 +1,4 @@
-name: "Tests - Ubuntu"
+name: "Tests - MacOS"
 
 on: 
     workflow_dispatch:
@@ -14,7 +14,7 @@ on:
 
 jobs:
     test:
-        runs-on: ${{ matrix.os }}
+        runs-on: macos-latest
         env:
             DEBUG_ON: "True"
         defaults:
@@ -23,7 +23,6 @@ jobs:
         
         strategy:
             matrix:
-                os: [ubuntu-latest]
                 python-versions: [3.10, 3.11]
                 
         steps:

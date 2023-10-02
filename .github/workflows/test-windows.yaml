@@ -14,7 +14,7 @@ on:
 
 jobs:
     test:
-        runs-on: ${{ matrix.os }}
+        runs-on: windows-latest
         env:
             DEBUG_ON: "True"
         defaults:
@@ -23,8 +23,7 @@ jobs:
         
         strategy:
             matrix:
-                os: [windows-latest]
-                python-versions: [3.11]
+                python-versions: [3.10, 3.11]
                 
         steps:
             - uses: actions/checkout@v3
@@ -38,6 +37,10 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
+
+            - name: Install local package
+              run: |
+                pip install -e .
 
             - name: Test application code
               run: pytest tests/
