@@ -40,7 +40,7 @@ class ScoreScraper:
         selectors_manager: SelectorsManager,
         driver,
         url: str | None = None,
-        timeout: float = 20,
+        timeout: float = 60,
     ) -> None:
         self.selectors_manager: SelectorsManager = selectors_manager
         self.driver: WebDriver = driver
