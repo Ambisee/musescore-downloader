@@ -2,10 +2,7 @@ import sys
 import logging
 from urllib.error import URLError
 
-import selenium
-from selenium import webdriver
-from selenium.webdriver import ChromeOptions
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
@@ -15,9 +12,6 @@ from selenium.common.exceptions import (
     InvalidArgumentException,
     NoSuchElementException
 )
-
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
 
 from ..common.exceptions import (
     UninitializedWebDriverError,
@@ -44,11 +38,12 @@ class ScoreScraper:
     def __init__(
         self,
         selectors_manager: SelectorsManager,
+        driver,
         url: str | None = None,
         timeout: float = 10,
     ) -> None:
         self.selectors_manager: SelectorsManager = selectors_manager
-        self.driver: webdriver.Chrome | None = None
+        self.driver: WebDriver = driver
         self.url: str | None = url
         self.timeout: float = timeout
 
@@ -58,47 +53,6 @@ class ScoreScraper:
 
     def set_timeout(self, timeout: float) -> None:
         self.timeout = timeout
-
-    def initialize(
-        self, 
-        use_headless: bool = True,
-    ) -> None:
-        """Initializes the webdriver instance.
-        
-        Parameters
-        ----------
-        use_headless : bool, default=True
-            Toggles the browser's headless mode.
-
-        Returns
-        -------
-        None
-
-        Raises
-        ------
-        URLError
-            Unable to retrieve the web driver of the browser.
-        """
-
-        manager = ChromeDriverManager()
-
-        try:
-            driver_path = manager.install()
-        except URLError as e:
-            raise e
-        
-        service = ChromeService(driver_path)
-
-        options = ChromeOptions()
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        options.add_argument("--disable-dev-shm-usage")
-        options.add_argument("--start-maximized")
-        options.add_argument("--no-sandbox")
-
-        if use_headless:
-            options.add_argument("--headless=new")
-
-        self.driver = webdriver.Chrome(options, service)
 
     def shutdown_driver(self):
         """Performs teardown on the currently active webdriver
@@ -113,6 +67,7 @@ class ScoreScraper:
     def find_initial_img_element(self):
         try:
             self.driver.get(self.url)
+            self.driver.set_window_size(1920, 1080)
             initial_img_element: WebElement = WebDriverWait(self.driver, self.timeout).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, f"{self.selectors_manager.page_container_selector} > img"))
             )
@@ -131,30 +86,13 @@ class ScoreScraper:
         
         return initial_img_element
 
-    def find_page_element(self, page_containers, i):
-        logging.info(f"Retrieving URL for page {i + 1}...")
-        self.driver.execute_script(
-            "pageContainers[arguments[0]].scrollIntoView({ block: arguments[1] });", 
-            i,
-            "center"
-        )
-
-        try:
-            page_image_url: str = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
-            )
-        except TimeoutException as e:
-            self.shutdown_driver()
-            raise PageElementNotFoundError(i + 1)
-        except URLError:
-            self.shutdown_driver()
-            raise URLError()
-        except Exception as e:
-            self.shutdown_driver()
-            raise e
+    def find_metadata_elements(self):
+        page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
+        title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
+        total_pages = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
         
-        return page_image_url
-
+        return page_containers, title, total_pages
+    
     def execute(self) -> ScoreScraperResult:
         """Starts the process of web scraping as specified by the class.
 
@@ -194,23 +132,30 @@ class ScoreScraper:
         logging.info(f"Retrieved the title of the music sheet: {title}")
         logging.info(f"Retrieved the number of total pages in the music sheet: {total_pages} pages in total")
 
-        self.driver.execute_script(f"window.scrollElement = document.querySelector(arguments[0]);", self.selectors_manager.scroll_element_selector)
-        self.driver.execute_script(f"window.pageContainers = document.querySelectorAll(arguments[0]);", self.selectors_manager.page_container_selector)
-
         image_urls = [initial_img_element.get_attribute("src")]
 
         logging.info("Retrieving URL for page 1...")
         logging.info("Retrieved URL for page 1.")
 
         for i in range(1, total_pages):
-            page_image_url = self.find_page_element(page_containers, i)
+            logging.info(f"Retrieving URL for page {i + 1}...")
+
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({ block: arguments[1] });", 
+                page_containers[i],
+                "center"
+            )
+
+            self.driver.save_screenshot(f"./page_{i + 1}_screenshot.png")
+            page_image_url = WebDriverWait(self.driver, self.timeout).until(
+                lambda driver: page_containers[i].find_element(By.TAG_NAME, "img").get_attribute("src")
+            )
 
             image_urls.append(page_image_url)
             logging.info(f"Retrieved URL for page {i + 1}.")
 
         self.shutdown_driver()
 
-        logging.info("The scraper has been closed. Please reinitialize the scraper before running it again.")
         logging.info("Finished retrieving image URLS for each page of the music sheet.")
 
         return ScoreScraperResult(
@@ -218,24 +163,3 @@ class ScoreScraper:
             image_urls,
             total_pages,
         )
-
-    def find_metadata_elements(self):
-        try:
-            page_containers = self.driver.find_elements(By.CSS_SELECTOR, self.selectors_manager.page_container_selector)
-            # title = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
-            # total_pages = self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
-            
-            title = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.title_container_selector).text
-            )
-
-            total_pages = WebDriverWait(self.driver, self.timeout).until(
-                lambda driver: self.driver.find_element(By.CSS_SELECTOR, self.selectors_manager.total_pages_container_selector).text
-            )
-        except NoSuchElementException as e:
-            raise PageElementNotFoundError()
-        except TimeoutException as e:
-            raise MetadataElementNotFoundError(e)
-        
-        return page_containers, title, total_pages
-        
