@@ -35,6 +35,10 @@ jobs:
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
 
+            - name: Install local package
+              run: |
+                pip install -e .
+
             - name: Test application code
               run: musescore-downloader https://musescore.com/user/12461571/scores/3291706
             
