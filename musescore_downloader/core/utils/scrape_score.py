@@ -22,7 +22,8 @@ from ...common.exceptions import (
 def scrape_score(
     url: str,
     selectors_manager: SelectorsManager,
-    logger: Logger
+    logger: Logger,
+    scraper_timeout: float = 10,
 ) -> ScoreScraperResult | Exception:
     """Scrapes the Musescore webpage for the URLs of the score's pages.
 
@@ -34,6 +35,8 @@ def scrape_score(
         The object that stores the CSS selectors.
     logger : Logger
         The object that handles printing messages.
+    scraper_timeout : float, default=10
+        The maximum time for the scraper to wait for a specific state until timeout.
 
     Returns
     -------
@@ -45,7 +48,8 @@ def scrape_score(
 
     scraper = ScoreScraper(
         selectors_manager,
-        driver
+        driver,
+        timeout=scraper_timeout
     )
 
     scraper.set_url(url)
