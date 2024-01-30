@@ -10,7 +10,7 @@ from musescore_downloader.managers import (
     PathManager
 )
 
-def test_simple(
+def test_score_scrape_simple(
     MUSESCORE_URL: str,
     SELECTORS_MANAGER: SelectorsManager,
     LOGGER: Logger
@@ -28,7 +28,7 @@ def test_simple(
     assert len(result.urls) == 4
     assert isinstance(result.urls[0], str)
 
-def test_invalid_domain_url(
+def test_score_scraper_invalid_domain_url(
     INVALID_DOMAIN_URL: str,
     SELECTORS_MANAGER: SelectorsManager,
     LOGGER: Logger
@@ -41,7 +41,7 @@ def test_invalid_domain_url(
 
     assert isinstance(result, InvalidURLError)
 
-def test_invalid_schema_url(
+def test_score_scraper_invalid_schema_url(
     INVALID_SCHEMA_URL: str,
     SELECTORS_MANAGER: SelectorsManager,
     LOGGER: Logger
