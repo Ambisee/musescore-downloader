@@ -99,7 +99,5 @@ def scrape_score(
         )
         logger.error(message)
         return UnexpectedError(message)
-    finally:
-        scraper.shutdown_driver()
     
     return result
