@@ -2,11 +2,13 @@
 name = "musescore-downloader"
 version = "1.0.0"
 dependencies = []
+description = "A web scraper for scraping a music sheet from Musescore."
+readme = "README.md"
+requires-python = ">=3.11"
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
-
 
 [project.scripts]
 musescore-downloader = "musescore_downloader:cli_main"

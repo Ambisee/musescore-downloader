@@ -8,6 +8,7 @@ output
 **/*.egg-info
 **/dist
 **/build
+**/musescore-downloader*
 
 # Files
 **/*.txt
