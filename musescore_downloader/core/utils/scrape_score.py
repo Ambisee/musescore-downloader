@@ -1,3 +1,4 @@
+import os
 from logging import Logger
 
 from urllib.error import URLError
@@ -44,7 +45,10 @@ def scrape_score(
         If successful, the object that stores the result of the scraper. Else,
         An exception detailing the error encountered during the process.    
     """
-    driver = ChromeDriverFactory().create_driver()
+
+    logger.info("Start...")
+    executable_path = os.getenv("CHROME_DRIVER_PATH")
+    driver = ChromeDriverFactory().create_driver(path=executable_path)
 
     scraper = ScoreScraper(
         selectors_manager,
@@ -95,5 +99,7 @@ def scrape_score(
         )
         logger.error(message)
         return UnexpectedError(message)
+    finally:
+        scraper.shutdown_driver()
     
     return result

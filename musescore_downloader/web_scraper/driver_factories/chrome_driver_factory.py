@@ -12,15 +12,17 @@ class ChromeDriverFactory(BaseDriverFactory):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def create_driver(self):
-        manager = ChromeDriverManager()
-
+    def create_driver(self, path=None):
         try:
-            driver_path = manager.install()
+            if path is not None:
+                driver_path = path
+            else:
+                manager = ChromeDriverManager()
+                driver_path = manager.install()
+            service = ChromeService(driver_path)
         except URLError as e:
             raise e
 
-        service = ChromeService(driver_path)
 
         options = ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging', 'enable-automation'])
